@@ -11,7 +11,7 @@
            %% digital version of a document. Replace with `printed`
            %% to enable the default options for the printed version
            %% of a document.
-  table,   %% Causes the coloring of tables. Replace with `notable`
+  notable,   %% Causes the coloring of tables. Replace with `notable`
            %% to restore plain tables.
   lof,     %% Prints the List of Figures. Replace with `nolof` to
            %% hide the List of Figures.
@@ -42,15 +42,15 @@
 %%
 %% The following section sets up the metadata of the thesis.
 \thesissetup{
-    date          = \the\year/\the\month/\the\day,
+    date          = 2017/06/04, %\the\year/\the\month/\the\day,
     university    = mu,
     faculty       = fi,
     type          = bc,
-    author        = Jane Doe,
+    author        = Lenka Svetlovská,
     gender        = f,
-    advisor       = John Smith,
-    title         = {The Proof of P = NP},
-    TeXtitle      = {The Proof of $\mathsf{P}=\mathsf{NP}$},
+    advisor       = {RNDr. Andriy Stetsko, Ph.D.},
+    title         = {Security and cryptography in GO},
+    TeXtitle      = {Security and cryptography in GO},
     keywords      = {keyword1, keyword2, ...},
     TeXkeywords   = {keyword1, keyword2, \ldots},
     bib           = example.bib,
@@ -74,517 +74,341 @@
 \usepackage{amsfonts}
 \usepackage{url}      %% Hyperlinks
 \usepackage{markdown} %% Lightweight Markup
+
+%added usepackages
+%\usepackage{rotating} %rotate table?
+%\newcommand*{\TitleInParbox}{\parbox[c]{0.3\linewidth}{\Title}}
+\usepackage{longtable}
+\usepackage{array}
+\newcolumntype{P}[1]{>{\centering\arraybackslash}p{#1}}
+\usepackage{enumitem}
+
 \begin{document}
 \chapter{Introduction}
-Theses are rumoured to be the capstones of education, so I decided
-to write one of my own. If all goes well, I will soon have a
-diploma under my belt. Wish me luck!
 
-\begin{otherlanguage}{czech}
-Říká se, že závěrečné práce jsou vyvrcholením studia a tak jsem se
-rozhodl jednu také napsat. Pokud vše půjde podle plánu, odnesu si
-na konci semestru diplom. Držte mi palce!
-\end{otherlanguage}
 
-\begin{otherlanguage}{slovak}
-Hovorí sa, že záverečné práce sú vyvrcholením štúdia a tak som sa
-rozhodol jednu tiež napísať. Ak všetko pôjde podľa plánu, odnesiem
-si na konci semestra diplom. Držte mi palce!
-\end{otherlanguage}
+\chapter{Basic Terms}
+In this section, I define the basic terms which are necessary to an understanding of the text 
+presented in the following chapters. First I explain the symmetric and asymmetric cryptography, X.509 
+certificates, protocols SSL and TLS. Finally, I describe TLS\_PSK, which is indispensable 
+for working with ......
 
-\begin{otherlanguage}{german}
-Man munkelt, dass die Dissertation die Krönung der Ausbildung ist.
-Deshalb habe ich mich beschlossen meine eigene zu schreiben. Wenn
-alles gut geht, bekomme ich bald ein Diplom. Wünsch mir Glück!
-\end{otherlanguage}
+\section{Cryptography}
+Cryptography is the study of mathematical techniques related to aspects of information
+security such as confidentiality, data integrity, entity authentication, and data origin
+authentication \cite{menezes1996handbook}. %Together with cryptanalysis, which is engaged in deciphering codes without the secret knowledge key, is the part of science called cryptology.
+%\vskip 0.2in
+%Already in the nineteenth century, Auguste Kerckhoffs formulated the principle which has been true in cryptography today. Safety of cryptosystem must not depend on the secrecy of the algorithm. It must be publicly known, and security must depend only on the secret key \cite{menezes1996handbook}. 
+Today we talk about computer security which consists in the fact that the attacker does not have 
+enough computational strength and time to decode the cipher. 
+%Discrete logarithm and factorization of large numbers belong to the issues for which there is no effective algorithm today.
+%\vskip 0.2in
+We can divide cryptography base on the type of keys into three parts. They are symmetric 
+cryptography, asymmetric cryptography, and other primitives %, for example, hash functions, one-way permutation or random number generators
+\cite{menezes1996handbook}%%, see Figure \ref{fig:secPrim}
+.
 
-\begin{otherlanguage}{russian}\textrussian{%
-Говорят, что тезис -- это кульминация обучения. Поэтому я и решил
-написать собственный тезис. Если всё сработает по плану, я скоро
-получу диплом. Желайте мне удачи!
-}\end{otherlanguage}
+%%OBRAZOK
+%\begin{figure}[th]
+%	\centering
+%	\includegraphics[width=0.82\textwidth]{securityPrimitives}
+%	\caption{A taxonomy of cryptographic primitives}
+%	\label{fig:secPrim}
+%\end{figure}
+%%info handbook strana 23
 
-\chapter{These are}
-\section{the available}
-\subsection{sectioning}
-\subsubsection{commands.}
-\paragraph{Paragraphs and}
-\subparagraph{subparagraphs are available as well.}
-Inside the text, you can also use unnumbered lists,
-\begin{itemize}
-  \item such as
-  \item this one
-  \begin{itemize}
-    \item     and they can be nested as well.
-    \item[>>] You can even turn the bullets into something fancier,
-    \item[\S] if you so desire.
-  \end{itemize}
+\subsection{Symmetric Cryptography}
+%The beginnings of symmetric cryptography date back to around 2000 BC.\cite{singh2011code}. 
+Symmetric encryption, as the name suggests, means that the encryption and decryption of 
+plaintext are based on sharing a together secret - keys. The secret key could be a number, a 
+word or just string of random letters. %This problem, however, stems directly from the provisions of a mystery. The problem of secure transfer of the message, in this case, is only converted to the issue of secure transmission of secret keys. This situation we can solve by other means, such as personal meetings or any infrastructure provided key distribution. Globally, all similar approaches proved to be unsuitable \cite{singh2011code}.
+%\vskip 0.2in 
+
+Symmetric ciphers could be divided into block and stream. Stream ciphers encrypt each character 
+of plaintext separately, usually one bit. Block ciphers encrypt plaintext into blocks with 
+fixed bit length \textit{n}. %Messages, which have more than \textit{n} bits, are separated into \textit{n}-bit blocks and then they are encrypted. 
+%We distinguish several basic modes, such as ECB (Electronic Codebook), CBC (Cipher Block Chaining), CFB (Cipher Feedback) and OFB (Output Feedback), CTR (Counter Mode) \cite{piper2006kryptografie}.
+%Stream ciphers are typically faster and easier for hardware implementation. They are often used in telecommunication applications, where we can use a very limited buffer. Their using is also advantageous in environment where is a significant probability of errors in the transmission because there is no propagation of this error to other data. In turn, block ciphers can perform the function Message Authentication Code (MAC) or hash functions.
+%\vskip 0.2in 
+
+The main disadvantage of symmetric cryptography is the necessity of a large number of keys 
+and need of their distribution. For example, for together communication \textit{n} operators 
+need to have \[ \frac{n * (n - 1)}{2}\] keys. It means that for the encrypted communications of 
+midsize company with 50 employees, it would need to share 1225 different keys. 
+%\vskip 0.2in
+
+On the other hand, the advantage is the low computational complexity of symmetric ciphers. 
+Their using is also useful in cases where the encrypted data are not sent anywhere, for example, 
+to protect files on a personal computer.
+ 
+\subsection{Asymmetric Cryptography}
+%Unlike symmetric cryptography, asymmetric cryptography is very young. Its origins could be found in 1977 when the RSA cryptosystem was created based on the impossibility of effectively factorize of large numbers. In fact, the beginning of asymmetric cryptography was established a few years earlier by Clifford Cocks. His research, however, was still kept secret until recently \cite{singh2011code}.
+%\vskip0.2in
+Asymmetric cryptography allows data encryption and particularly the implementation of the 
+digital signature. Each entity has two keys. The first is the private key that is used to 
+decrypt a message or create a digital signature. It must be kept secret. The second key is 
+public which is used for encryption and authentication of the digital signature. Of course, 
+there is impossible to derive the private key from the public key.
+%\vskip0.2in
+%Asymmetric cryptography, itself, does not solve the authenticity of the public key. It is necessary to decide whether the given public key belongs to given entity. The solution of this problem is the infrastructure of the public key \cite{dostalek2016velky} which is nowadays the most widespread means of ensuring the credibility of the digital signature.
+%\vskip0.2in
+
+The main advantages of asymmetric cryptography are mainly a smaller number of keys than 
+symmetric cryptography. If each entity has one public and one private key, it means that for 
+\textit{n} entities are needed \textit{2n} keys. In the same situation as in the previous 
+example, a company of 50 employees would need to ensure the safety of 100 keys, which is 
+substantially less than 1225.
+%\vskip0.2in
+
+The biggest disadvantage of asymmetric cryptography is its slowness compared with symmetric 
+cryptography. Therefore, they are most often used together, while the text is encrypted with a 
+random symmetric encryption key. The key is encrypted using asymmetric ciphers. In the case of a 
+digital signature, the first is created the fixed length hash of the message and then it is 
+signed using asymmetric cryptography.
+
+\subsection{Hash Function}
+Hash functions are one of the basic elements of modern cryptography, often called one-way 
+hash function.
+%\vskip0.2in
+
+Hash functions are effectively designed display binary strings unlimited length to binary 
+strings a fixed length, called hash value. For a perfect hash function that has \textit{n}-bit 
+hash value, there is a chance that a randomly selected string will be displayed on specific hash 
+value $2^{-n}$. The basic idea of hash functions is that the hash value should serve as a 
+representative of the input string. Hash function suitable for use in cryptography is usually 
+chosen so that it is computationally very difficult find two different input strings that have 
+the same hash value. If it succeeds in these two find strings, we say that we found a collision. 
+Likewise, it should be computationally very difficult to find for a hash value corresponding to 
+the input string. Using hash functions are used frequently to check the integrity of data and 
+for digital signing of data \cite{piper2006kryptografie}.
+
+ITEMIZE
+
+\section{The X.509 Certificate}
+Standard X.509 was originally designed as an authentication framework for X.500 
+directories \cite{schmeh2006cryptography}. They have a hierarchical structure and the 
+individual attributes can be assigned to individual computers of companies or individual 
+printers. That is, each entity can be clearly identified, and each can have its private and 
+public key. The proposal envisages the hierarchical structure of certificate authorities. 
+Certificate X.509, see Figure \ref{fig:certificate}.
+%\vskip0.2in
+%The first version of the X.509 standard was already appeared in 1988 as the first proposal for PKI \cite{schmeh2006cryptography}. It was released by the International Telecommunication Union, Telecommunication Standardization Sector (ITU-T) cooperate with the International Organization for Standardization (ISO). It enabled its global adoption and extension. The first version was very simple and today is already inadequate. It contained only 7 fields:
+%\vskip 0.2in
+%\begin{itemize}[leftmargin=2em,rightmargin=1em,itemsep=0.75\parskip,parsep=0em,topsep=0em,partopsep=0em]
+%\item certificate version;
+%\item certificate series number;
+%\item algorithm which signed certificate;
+%\item name of certification authority which certificate released;
+%\item identity of certificate owner;
+%\item public key of certificate owner;
+%\item certificate validity.
+%\end{itemize}
+%\vskip 0.2in
+%The second version was introduced five years later in 1993 and brought only minimal changes \cite{schmeh2006cryptography}. It contained only two new fields:
+%\vskip 0.2in
+%\begin{itemize}[leftmargin=2em,rightmargin=1em,itemsep=0.75\parskip,parsep=0em,topsep=0em,partopsep=0em]
+%\item unique identifier of the certificate owner;
+%\item unique identifier of the certification authority.
+%\end{itemize}
+%\vskip 0.2in
+%The second version did not solve the problems associated with the first version. Fields which was needed in this version, still missing \cite{schmeh2006cryptography}.
+%\vskip0.2in
+%The third version was introduced in 1996 and the full specification can be found in ITU-T Recommendation X.509 or under the name ISO/IEC 9594-8 \cite{X.509}. Its biggest and most important benefit is to support the expansion. It is defined a syntax that allows you to create custom certificate extension. It eliminates the major shortcomings of the two previous versions, but then appears some incompatibility. Each extension has a name and a field that is intended to indicate whether they are a critical or optional extension. Application, that can not work with extension marked as critical, must immediately reject this certificate. On the other hand, if the extension is optional, it can be ignored. To avoid uncontrolled growth expansion, in 1997 fourteen of them were fixed and became part of the standard \cite{schmeh2006cryptography}.
+
+\begin{figure}[th]
+	\centering
+	\includegraphics[width=1\textwidth]{certificate}
+	\caption{Structure X.509 Certificate}
+	\label{fig:certificate}
+\end{figure}
+%% Zdroj info o obrazku:
+% @techreport{housley2002internet,
+%   title={Internet X. 509 public key infrastructure certificate and % certificate revocation list (CRL) profile},
+%   author={Housley, Russell and Polk, William and Ford, Warwick and Solo, David},
+%  year={2002}
+% }
+
+To the protocols which mostly use X.509 certificates, belongs primarily SSL, TLS.
+
+\section{Protocols SSL and TLS}
+Protocols SSL and TLS are used for secure communications between client and server. They 
+create a framework for the use of encryption and hash functions.
+\vskip0.2in
+SSL was developed by Netscape Communications which published three versions. The first version 
+was only a test, the second has been used in practice. However, it still contained security 
+vulnerabilities, the most important was susceptibility to attack \textit{man in the middle}. %zdroj?? https://scholar.google.sk/scholar?q=Security+Technologies+for+the+World+Wide+Web&btnG=&hl=sk&as_sdt=0%2C5 
+The third version was introduced in 1996 and its specification could be found in the document \textit{The SSL Protocol Version 3.0} \cite{freier2011secure}. Of this version was created TLS protocol which is currently the most widespread and supported \cite{oppliger2003security}. There are three versions which have only minimal differences.
+\vskip0.2in
+Protocol SSL/TLS provides authentication of the two communicating parties by using asymmetric 
+encryption, message integrity by using MAC and confidentiality by encrypting all communications 
+by selected symmetric cipher.
+\vskip0.2in
+Protocol SSL/TLS is located between the application and the transport layer reference ISO/OSI 
+model and consists of two main parts. They are \textit{The Record Layer Protocol} (RLP) and 
+\textit{Handshake Protocol} (HP). %Part of HP are two auxiliary protocols - \textit{Change Cipher Specification Protocol} (CCSP) and \textit{Alert Protocol} (AP) \cite{oppliger2003security}.
+\vskip0.2in
+\textit{Record Layer Protocol} processes application data, performs fragmentation, compression 
+and data encryption. On the other hand, it decrypts the data again and verifies the checksums. 
+RLP protocol does not care about the type of encryption algorithm or encryption key setting. 
+This information is from HP.
+
+\textit{Handshake Protocol} is activated immediately after establishment the connection and 
+provides identification of communicating parties, provision of cryptographic algorithms, 
+compression algorithms and other attributes. Then it creates \textit{a master secret} from which 
+are derived encryption keys, initiation vectors and the MAC. The process of the protocol is:
+\vskip0.2in
+\begin{enumerate}
+\item The client wants to connect to the server and sends \textit{ClientHello}, which contains 
+the highest number of version supported by SSL/TLS, the number of session (it is empty if it is 
+a new session), the list of supported ciphers and compression methods and a random number.
+\item The client waits for a response in the form of a report \textit{ServerHello}, which will 
+contain the highest number of versions of SSL/TLS, which is supported by server and client. It 
+will also contain encryption and compression method, which are selected from the list received 
+in step one, a random number and its public key certificate (the server can also request 
+authentication client).
+\item The client verifies the server certificate, if all ciphers are satisfied. Next, he sends 
+a request to server to exchange keys. At the end the server and client share a common 48 bits 
+\textit{premaster secret}. \textit{The master secret} is derived from it. Then of the master 
+secret and random numbers \textit{ClientHello ServerHello} are derived two session keys to 
+encrypt messages and two MAC initiation vectors for use symmetric cipher in CBC mode. 
+\item The client sends a confirmation selected ciphers. From this moment, the communication has 
+been encrypted and the client sends a message that ends with this phase. In case the server 
+required the client authentication, it has been carried out in this step. 
+\item Finally, the server sends a confirmation used ciphers and message about the completion of 
+this phase, thereby HP ends.
+\end{enumerate}
+
+%\textit{Change Cihper Specification Protocol} is a simple protocol that contains only a single message. It says there was the change of the encryption parameters and now only new ones will be used. It could be also called after the end of the initial phase.
+
+%\textit{Alert protocol} provides the transmission of warning in case of any problem in communication - it contains an array of warning severity and description of the problem.
+\vskip0.2in
+The used algorithms:
+\begin{itemize}[leftmargin=2em,rightmargin=1em,itemsep=0.75\parskip,parsep=0em,topsep=0em,partopsep=0em]
+\item key exchange: RSA, Diffie-Hellman, ECDH;
+\item stream symmetric ciphers: RC4 with key length of 40-120 bits;
+\item block symmetric ciphers: DES, DES40, 3DES, IDEA;
+\item hashing algorithms: MD5, SHA.
 \end{itemize}
-Numbered lists are
-\begin{enumerate}
-  \item very
-  \begin{enumerate}
-    \item similar
-  \end{enumerate}
-\end{enumerate}
-and so are description lists:
-\begin{description}
-  \item[Description list]
-    A list of terms with a description of each term
-\end{description}
-The spacing of these lists is geared towards paragraphs of text.
-For lists of words and phrases, the \textsf{paralist} package
-offers commands
-\begin{compactitem}
-  \item that
-  \begin{compactitem}
-    \item are
-    \begin{compactitem}
-      \item better
-      \begin{compactitem}
-        \item suited
-      \end{compactitem}
-    \end{compactitem}
-  \end{compactitem}
-\end{compactitem}
-\begin{compactenum}
-  \item to
-  \begin{compactenum}
-    \item this
-    \begin{compactenum}
-      \item kind of
-      \begin{compactenum}
-        \item content.
-      \end{compactenum}
-    \end{compactenum}
-  \end{compactenum}
-\end{compactenum}
-The \textsf{amsthm} package provides the commands necessary for the
-typesetting of mathematical definitions, theorems, lemmas and
-proofs.
+\vskip0.2in
+TLS uses public key certificates for authentication. To establish a TLS connection are used 
+symmetric keys (later called pre-shared keys or PSKs), shared in advance among the 
+communicating parties \cite{eronen2005pre}.
 
-%% We will define several mathematical sectioning commands.
-\newtheorem{theorem}{Theorem}[section] %% The numbering of theorems
-                               %% will be reset after each section.
-\newtheorem{lemma}[theorem]{Lemma}         %% The numbering of lemmas
-\newtheorem{corollary}[theorem]{Corollary} %% and corollaries will
-                               %% share the counter with theorems.
-\theoremstyle{definition}
-\newtheorem{definition}{Definition}
-\theoremstyle{remark}
-\newtheorem*{remark}{Remark}
+\subsection{PSK Key Exchange Algorithm}
 
-\begin{theorem}
-  This is a theorem that offers a profound insight into the
-  mathematical sectioning commands.
-\end{theorem}
-\begin{theorem}[Another theorem]
-  This is another theorem. Unlike the first one, this theorem has
-  been endowed with a name.
-\end{theorem}
-\begin{lemma}
-  Let us suppose that $x^2+y^2=z^2$. Then
-  \begin{equation}
-    \biggl\langle u\biggm|\sum_{i=1}^nF(e_i,v)e_i\biggr\rangle
-    =F\biggl(\sum_{i=1}^n\langle e_i|u\rangle e_i,v\biggr).
-  \end{equation}
-\end{lemma}
-\begin{proof}
-  $\nabla^2 f(x,y)=\frac{\partial^2f}{\partial x^2}+
-   \frac{\partial^2f}{\partial y^2}$.
-\end{proof}
-\begin{corollary}
-  This is a corollary.
-\end{corollary}
-\begin{remark}
-  This is a remark.
-\end{remark}
+\chapter{Language GO}
+Go is a programming language developed at \textit{Google} in year 2007 and announced in November 
+2009. Many companies have started using Go because of its performance, simplicity, ease of use 
+and powerful tooling. Go programming language is a statically-typed language with advanced 
+features and a clean syntax \cite{doxsey2016introducing}. It combines the performance and 
+security benefits associated with using a compiled language like \textit{C++} with the speed of 
+a dynamic language like \textit{Python}. It provides:
+\vskip0.2in
+\begin{itemize}[leftmargin=2em,rightmargin=1em,itemsep=0.75\parskip,parsep=0em,topsep=0em,partopsep=0em]
+\item garbage collector - memory is cleaned up automatically when nothing refers to it anymore,
+\item fast compilation time - through effective work with addictions individual parts of the 
+program and simple grammar,
+\item light-weight processes (via goroutines), channels,
+\item a rich standard library,
+\item easy testing - incorporated directly into the core language,
+\item one of the best documentation - a clear and full of examples.
+\end{itemize}
+\vskip0.2in
 
-\chapter{Floats and references}
-\begin{figure}
-  \begin{center}
-    %% PNG and JPG images can be inserted into the document as well,
-    %% but their resolution needs to be adequate. The minimum is
-    %% about 100 pixels per 1 centimeter or 300 pixels per 1 inch.
-    %% That means that a JPG or PNG image typeset at 4 × 4 cm should
-    %% be 400 × 400 px large at the bare minimum.
-    %%
-    %% The optimum is about 250 pixels per 1 centimeter or 600
-    %% pixels per 1 inch. That means that a JPG or PNG image typeset
-    %% at 4 × 4 cm should be 1000 × 1000 px large or larger.
-    \includegraphics[width=4cm]{fithesis/logo/mu/fithesis-base.pdf}
-  \end{center}
-  \caption{The logo of the Masaryk University at 40\,mm}
-  \label{fig:mulogo1}
-\end{figure}
+Go excluded some features intentionally to keep language simple and concise. There is no support 
+for type inheritance, for method or operator overloading, for circular dependencies among 
+packages, for pointer arithmetic, for assertions nor for generic programming.
 
-\begin{figure}
-  \begin{minipage}{.66\textwidth}
-    \includegraphics[width=\textwidth]{fithesis/logo/mu/fithesis-base.pdf}
-  \end{minipage}
-  \begin{minipage}{.33\textwidth}
-    \includegraphics[width=\textwidth]{fithesis/logo/mu/fithesis-base.pdf} \\
-    \includegraphics[width=\textwidth]{fithesis/logo/mu/fithesis-base.pdf}
-  \end{minipage}
-  \caption{The logo of the Masaryk University at $\frac23$ and
-    $\frac13$ of text width}
-  \label{fig:mulogo2}
-\end{figure}
+\section{Packages}
 
-\begin{table}
-  \begin{tabularx}{\textwidth}{lllX}
-    \toprule
-    Day & Min Temp & Max Temp & Summary \\
-    \midrule
-    Monday & $13^{\circ}\mathrm{C}$ & $21^\circ\mathrm{C}$ & A
-    clear day with low wind and no adverse current advisories. \\
-    Tuesday & $11^{\circ}\mathrm{C}$ & $17^\circ\mathrm{C}$ & A
-    trough of low pressure will come from the northwest. \\
-    Wednesday & $10^{\circ}\mathrm{C}$ &
-    $21^\circ\mathrm{C}$ & Rain will spread to all parts during the
-    morning. \\
-    \bottomrule
-  \end{tabularx}
-  \caption{A weather forecast}
-  \label{tab:weather}
+\subsubsection{}
+
+\begin{table}[th]
+\begin{tabular}{|c c c|}
+\hline
+crypto & encoding & hash \\
+\hline
+aes & ascii85 & adler32 \\
+cipher & asn1 & crc32 \\
+des & base32 & crc64 \\
+dsa & base64 & fnv \\
+esdsa & biary &  \\
+elliptic & csv &  \\
+hmac & gob &  \\
+md5 & hex &  \\
+rand & json &  \\
+rc4 & pem &  \\
+rsa & xml &  \\
+sha1 &  &  \\
+sha356 &  &  \\
+sha512 &  &  \\
+subtle &  &  \\
+tls &  &  \\
+x509 \footnote{contains subpackage pkix} &  & \\ 
+\hline
+\end{tabular}
+\caption{Table of cryptographic libraries created by golang} 
+\label{table:crypto} 
 \end{table}
+% ZDROJ: https://golang.org/pkg/
 
-The logo of the Masaryk University is shown in Figure
-\ref{fig:mulogo1} and Figure \ref{fig:mulogo2} at pages
-\pageref{fig:mulogo1} and \pageref{fig:mulogo2}. The weather
-forecast is shown in Table \ref{tab:weather} at page
-\pageref{tab:weather}. The following chapter is Chapter
-\ref{chap:matheq} and starts at page \pageref{chap:matheq}.
-Items \ref{item:star1}, \ref{item:star2}, and
-\ref{item:star3} are starred in the following list:
-\begin{compactenum}
-  \item some text
-  \item some other text
-  \item $\star$ \label{item:star1}
-  \begin{compactenum}
-    \item some text
-    \item $\star$ \label{item:star2}
-    \item some other text
-    \begin{compactenum}
-      \item some text
-      \item some other text
-      \item yet another piece of text
-      \item $\star$ \label{item:star3}
-    \end{compactenum}
-    \item yet another piece of text
-  \end{compactenum}
-  \item yet another piece of text
-\end{compactenum}
-If your reference points to a place that has not yet been typeset,
-the \verb"\ref" command will expand to \textbf{??} during the first
-run of
-\texttt{pdflatex \jobname.tex}
-and a second run is going to be needed for the references to
-resolve. With online services -- such as Overleaf -- this is
-performed automatically.
+\chapter{New chapter}
 
-\chapter{Mathematical equations}
-\label{chap:matheq}
-\TeX{} comes pre-packed with the ability to typeset inline
-equations, such as $\mathrm{e}^{ix}=\cos x+i\sin x$, and display
-equations, such as \[
-  \mathbf{A}^{-1} = \begin{bmatrix}
-  a & b \\ c & d \\
-  \end{bmatrix}^{-1} =
-  \frac{1}{\det(\mathbf{A})} \begin{bmatrix}
-  \,\,\,d & \!\!-b \\ -c & \,a \\
-  \end{bmatrix} =
-  \frac{1}{ad - bc} \begin{bmatrix}
-  \,\,\,d & \!\!-b \\ -c & \,a \\
-  \end{bmatrix}.
-\] \LaTeX{} defines the automatically numbered \texttt{equation}
-environment:
-\begin{equation}
-  \gamma Px = PAx = PAP^{-1}Px.
-\end{equation}
-The package \textsf{amsmath} provides several additional
-environments that can be used to typeset complex equations:
-\begin{enumerate}
-  \item An equation can be spread over multiple lines using the
-    \texttt{multline} environment:
-    \begin{multline}
-      a + b + c + d + e + f + b + c + d + e + f + b + c + d + e +
-f \\
-      + f + g + h + i + j + k + l + m + n + o + p + q
-    \end{multline}
+\begin{center}
+\begin{longtable}[th]{|P{1.6cm}P{1cm}P{1cm}P{1cm}P{1.3cm}P{1.3cm}P{1.2cm}P{1.1cm}|}
+\caption{Table of all cryptographic libraries in GO} \label{table:1} \\
 
-  \item Several aligned equations can be typeset using the
-    \texttt{align} environment:
-    \begin{align}
-              a + b &= c + d     \\
-                  u &= v + w + x \\[1ex]
-      i + j + k + l &= m
-    \end{align}
+\hline Name & Crypto. functions & Start of project & Is still opened & Issue tracker system & Doc. accessability & Number of downloads & License\\ \hline 
+\endfirsthead
 
-  \item The \texttt{alignat} environment is similar to
-    \texttt{align}, but it doesn't insert horizontal spaces between
-    the individual columns:
-    \begin{alignat}{2}
-      a + b + c &+ d       &   &= 0 \\
-              e &+ f + g   &   &= 5
-    \end{alignat}
+\multicolumn{8}{c}%
+{{\tablename\ \thetable{} -- continued from previous page}} \\
+\hline Name & Crypto. functions & Start of project & Is still opened & Issue tracker system & Doc. accessability & Number of downloads & License \\ \hline 
+\endhead
 
-  \item Much like chapter, sections, tables, figures, or list
-    items, equations -- such as \eqref{eq:first} and
-    \eqref{eq:mine} -- can also be labeled and referenced:
-    \begin{alignat}{4}
-      b_{11}x_1 &+ b_{12}x_2  &  &+ b_{13}x_3  &  &             &
-        &= y_1,                   \label{eq:first} \\
-      b_{21}x_1 &+ b_{22}x_2  &  &             &  &+ b_{24}x_4  &
-        &= y_2. \tag{My equation} \label{eq:mine}
-    \end{alignat}
+\hline \multicolumn{8}{|r|}{{Continued on next page}} \\ \hline
+\endfoot
 
-  \item The \texttt{gather} environment makes it possible to
-    typeset several equations without any alignment:
-    \begin{gather}
-      \psi = \psi\psi, \\
-      \eta = \eta\eta\eta\eta\eta\eta, \\
-      \theta = \theta.
-    \end{gather}
+\hline \hline
+\endlastfoot
 
-  \item Several cases can be typeset using the \texttt{cases}
-    environment:
-    \begin{equation}
-      |y| = \begin{cases}
-        \phantom-y & \text{if }z\geq0, \\
-                -y & \text{otherwise}.
-      \end{cases}
-    \end{equation}
-\end{enumerate}
-For the complete list of environments and commands, consult the
-\textsf{amsmath} package manual\footnote{
-  See \url{http://mirrors.ctan.org/macros/latex/required/amslatex/math/amsldoc.pdf}.
-  The \texttt{\textbackslash url} command is provided by the
-  package \textsf{url}.
-}.
-
-\chapter{\textnormal{We \textsf{have} \texttt{several} \textsc{fonts}
-  \textit{at} \textbf{disposal}}}
-The serified roman font is used for the main body of the text.
-\textit{Italics are typically used to denote emphasis or
-quotations.} \texttt{The teletype font is typically used for source
-code listings.} The \textbf{bold}, \textsc{small-caps} and
-\textsf{sans-serif} variants of the base roman font can be used to
-denote specific types of information.
-
-\tiny We \scriptsize can \footnotesize also \small change \normalsize
-the \large font \Large size, \LARGE although \huge it \Huge
-is \huge usually \LARGE not \Large necessary.\normalsize
-
-A wide variety of mathematical fonts is also available, such as: \[
-  \mathrm{ABC}, \mathcal{ABC}, \mathbf{ABC}, \mathsf{ABC},
-  \mathit{ABC}, \mathtt{ABC}
-\] By loading the \textsf{amsfonts} packages, several additional
-fonts will become available: \[
-  \mathfrak{ABC}, \mathbb{ABC}
-\] Many other mathematical fonts are available\footnote{
-  See \url{http://tex.stackexchange.com/a/58124/70941}.
-}.
-
-\chapter{Using lightweight markup}
-\shorthandoff{-}
-\begin{markdown*}{%
-  hybrid,
-  definitionLists,
-  footnotes,
-  hashEnumerators}
-
-If you decide that \LaTeX{} is too wordy for some parts of your
-document, there are [packages](https://www.ctan.org/pkg/markdown
-"Markdown") that allow you to use more lightweight markup next
-to it.
-
- ![logo](fithesis/logo/mu/fithesis-base.pdf "The logo of the
-  Masaryk University")
-
-This is a bullet list. Unlike numbered lists, bulleted lists
-contain an **unordered** set of bullet points. When a bullet point
-contains multiple paragraphs, the list is typeset as follows:
-
-  * The first item of a bullet list
-
-    that spans several paragraphs,
-  * the second item of a bullet list,
-  * the third item of a bullet list.
-
-When none of the bullet points contains multiple paragraphs, the
-list has a more compact form:
-
-  * The first item of a bullet list,
-  * the second item of a bullet list,
-  * the third item of a bullet list.
-
-Unlike a bulleted list, a numbered list implies chronology or
-ordering of the bullet points. When a bullet point
-contains multiple paragraphs, the list is typeset as follows:
-
-  1. The first item of an ordered list
-
-     that spans several paragraphs,
-  2. the second item of an ordered list,
-  3. the third item of an ordered list.
-  #. If you are feeling lazy,
-  #. you can use hash enumerators as well.
-
-When none of the bullet points contains multiple paragraphs, the
-list has a more compact form:
-
-  6. The first item of an ordered list,
-  7. the second item of an ordered list,
-  8. the third item of an ordered list.
-
-Definition lists are used to provide definitions of terms. When
-a definition contains multiple paragraphs, the list is typeset
-as follows:
-
-Term 1
-
-:   Definition 1
-
-*Term 2*
-
-:   Definition 2
-
-        Some code, part of Definition 2
-
-    Third paragraph of Definition 2.
-
-When none of the bullet points contains multiple paragraphs, the
-list has a more compact form:
-
-Term 1
-:   Definition 1
-*Term 2*
-:   Definition 2
-
-Block quotations are used to include an excerpt from an external
-document in way that visually clearly separates the excerpt from
-the rest of the work:
-
-> This is the first level of quoting.
->
-> > This is nested blockquote.
->
-> Back to the first level.
-
-Footnotes are used to include additional information to the
-document that are not necessary for the understanding of the main
-text. Here is a footnote reference[^1] and another[^longnote].
-
-[^1]: Here is the footnote.
-
-[^longnote]: Here's one with multiple blocks.
-
-    Subsequent paragraphs are indented to show that they
-belong to the previous footnote.
-
-        Some code
-
-    The whole paragraph can be indented, or just the first
-    line.  In this way, multi-paragraph footnotes work like
-    multi-paragraph list items.
-\end{markdown*}
-\shorthandon{-}
-
-\chapter{Inserting the bibliography}
-After linking a bibliography data\-base files to the document using
-the \verb"\"\texttt{thesissetup\{bib\discretionary{=}{=}{=}%
-\{\textit{file1},\textit{file2},\,\ldots\,\}\}} command, you can
-start citing the entries. This is just dummy text
-\parencite{inbook-full} lightly sprinkled with citations
-\parencite[p.~123]{incollection-full}. Several sources can be cited
-at once: \cite{inproceedings-full,manual-full,mastersthesis-full}.
-\citetitle{inbook-full} was written by \citeauthor{inbook-full} in
-\citeyear{inbook-full}. We can also produce \textcite{inbook-full}%
-\ or %% Let us define a compound command:
-\def\citeauthoryear#1{(\textcite{#1},~\citeyear{#1})}%
-\citeauthoryear{inbook-full}%
-. The full bibliographic citation is:
-\emph{\fullcite{inbook-full}}. We can easily insert a bibliographic
-citation into the footnote\footfullcite{inbook-full}.
-
-The \verb"\nocite" command will not generate any
-output\nocite{booklet-full}, but it will insert its arguments into
-the bibliography. The \verb"\nocite{*}" command will insert all the
-records in the bibliography database file into the bibliography.
-Try uncommenting the command
-%% \nocite{*}
-and watch the bibliography section come apart at the seams.
-
-When typesetting the document for the first time, citing a
-\texttt{work} will expand to [\textbf{work}] and the
-\verb"\printbibliography" command will produce no output. It is now
-necessary to generate the bibliography by running \texttt{biber
-\jobname.bcf} from the command line and then by typesetting the
-document again twice. During the first run, the bibliography
-section and the citations will be typeset, and in the second run,
-the bibliography section will appear in the table of contents.
-
-The \texttt{biber} command needs to be executed from within the
-directory, where the \LaTeX\ source file is located. In Windows,
-the command line can be opened in a directory by holding down the
-\textsf{Shift} key and by clicking the right mouse button while
-hovering the cursor over a directory.  Select the \textsf{Open
-Command Window Here} option in the context menu that opens shortly
-afterwards.
-
-With online services -- such as Overleaf -- all commands are
-executed automatically. When you omit the
-\verb"\printbibliography" command, its location will be decided
-by the template.
-
-  \printbibliography[heading=bibintoc] %% Print the bibliography.
-
-\chapter{Inserting the index}
-After using the \verb"\makeindex" macro and loading the
-\texttt{makeidx} package that provides additional indexing
-commands, index entries can be created by issuing the \verb"\index"
-command. \index{dummy text|(}It is possible to create ranged index
-entries, which will encompass a span of text.\index{dummy text|)}
-To insert complex typographic material -- such as $\alpha$
-\index{alpha@$\alpha$} or \TeX{} \index{TeX@\TeX} --
-into the index, you need to specify a text string, which will
-determine how the entry will be sorted. It is also possible to
-create hierarchal entries. \index{vehicles!trucks}
-\index{vehicles!speed cars}
-
-After typesetting the document, it is necessary to generate the
-index by running
-\begin{center}%
-  \texttt{texindy -I latex -C utf8 -L }$\langle$\textit{locale}%
-  $\rangle$\texttt{ \jobname.idx}
+golang/ crypto & Y & 2009 & Y & Y & 5 &  & Y\\ 
+%go-lang. cat-v.org/ pure-go-libs & N & \footnote{Page ceased updating in October, 2012} & & & & & Y \\ 
+%golang libs.com category cryptography & Y & not all & 2012-2016 & some & & & \\
+%golang libs.com category security & Y & not all & 2013-2016 & some & & & \\
+ory-am/ fosite & asym, hash & 2015 & Y & Y & 4 & & Y \\
+square/ go-jose & asym, sym & 2014 & Y & Y & 4 & & Y \\
+Shopify/ ejson & hash & 2014 & Y & Y & 3 & & Y \\
+mitchellh/ go-mruby & asym & 2014 & Y & Y & 4 & & Y \\
+Sermo Digital/ jose & all & 2015 & Y & Y & 4 &  & Y \\
+mozilla/ tls-observatory & hash & 2014 & Y & Y & 4 & & Y \\
+square/ certigo & hash & 2016 & Y & Y & 3 & & Y \\
+docker/ libtrust & all & 2014 & N & Y & 4 & & Y \\
+dedis/ crypto & sym, hash & 2010 & Y & Y & 4 & & Y \\
+dchest/ blake2b & hash & 2012 & N & Y & 4 & & Y \\
+enceve/ crypto & hash & 2016 & N & Y & 4 & & Y \\
+libp2p/ go-libp2p-crypto & all & 2015 & Y & Y & 4 &  & Y \\ 
+dchest/ blake2s & hash & 2012 & N & N & 3 & & Y \\
+benburkert/ openpgp & sym, hash & 2012 & N & N & 3 & & Y \\
+minio/ sha256-simd & hash & 2016 & Y & Y & 3 & & Y \\
+avelino/ awesome-go & un-known & 2014 & Y & Y & 4 & & Y \\
+ethereum/ go-ethereum & all & 2013 & Y & Y & 4 & & Y \\
+chain/ chain & hash & 2015 & Y & Y & 4 & & Y \\
+lightning network/lnd & sym, hash & 2015 & Y & Y & 4 & & Y \\
+square/ go-jose & asym, hash & 2014 & Y & Y & 4 & & Y \\
+dgrijalva/ jwt-go & asym, hash & 2012 & Y & Y & 4 & & Y \\
+golang/ oauth2 & asym, hash & 2014 & Y & Y & 4 & & Y  
+\end{longtable}
 \end{center}
-from the command line, where $\langle$\textit{locale}$\rangle$
-corresponds to the main locale of your thesis -- such as
-\texttt{english}, and then typesetting the document again.
+%%  Zdroje k tabulke:
+%%% https://golanglibs.com/top?q=security
+%%% https://golanglibs.com/category/cryptography?sort=top
+%%% http://go-lang.cat-v.org/pure-go-libs
+%%% https://godoc.org/golang.org/x/crypto
+%%% https://golang.org/pkg/
+%%% ?
 
-The \texttt{texindy} command needs to be executed from within the
-directory, where the \LaTeX\ source file is located. In Windows,
-the command line can be opened in a directory by holding down the
-\textsf{Shift} key and by clicking the right mouse button while
-hovering the cursor over a directory. Select the \textsf{Open Command
-Window Here} option in the context menu that opens shortly
-afterwards.
 
-With online services -- such as Overleaf -- the commands are
-executed automatically, although the locale may be erroneously
-detected, or the \texttt{makeindex} tool (which is only able to
-sort entries that contain digits and letters of the English
-alphabet) may be used instead of \texttt{texindy}. In either case,
-the index will be ill-sorted.
-
-  \makeatletter\thesis@blocks@clear\makeatother
-  \phantomsection %% Print the index and insert it into the
-  \addcontentsline{toc}{chapter}{\indexname} %% table of contents.
-  \printindex
-
-\appendix %% Start the appendices.
-\chapter{An appendix}
-Here you can insert the appendices of your thesis.
+\printbibliography
 
 \end{document}
