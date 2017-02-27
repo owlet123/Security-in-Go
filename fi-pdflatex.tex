@@ -76,7 +76,7 @@
 \usepackage{markdown} %% Lightweight Markup
 
 %added usepackages
-%\usepackage{rotating} %rotate table?
+\usepackage{rotating} %rotate table?
 %\newcommand*{\TitleInParbox}{\parbox[c]{0.3\linewidth}{\Title}}
 \usepackage{longtable}
 \usepackage{array}
@@ -84,6 +84,40 @@
 \usepackage{enumitem}
 \usepackage{graphicx,lipsum,wrapfig}
 \usepackage{footnote}
+\usepackage{listings}
+
+\usepackage{color}
+
+%New colors defined below
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+%Code listing style named "mystyle"
+\lstdefinestyle{mystyle}{
+  backgroundcolor=\color{backcolour},   commentstyle=\color{codegreen},
+  %keywordstyle=\color{magenta},
+  numberstyle=\tiny\color{codegray},
+  %stringstyle=\color{codepurple},
+  basicstyle=\footnotesize,
+  breakatwhitespace=false,         
+  breaklines=true,                 
+  captionpos=b,                    
+  keepspaces=true,                 
+  numbers=left,                    
+  numbersep=5pt,                  
+  showspaces=false,                
+  showstringspaces=false,
+  showtabs=false,                  
+  tabsize=2
+}
+
+%"mystyle" code listing set
+\lstset{style=mystyle}
+
+
+
 
 \begin{document}
 \chapter{Introduction}
@@ -147,7 +181,7 @@ Asymmetric cryptography allows data encryption and particularly the implementati
 digital signature. Each entity has two keys. The first is the private key that is used to 
 decrypt a message or create a digital signature. It must be kept secret. The second key is 
 public which is used for encryption and authentication of the digital signature. Of course, 
-there is impossible to derive the private key from the public key.
+there is impossible to derive the private key from the public key \cite{dostalek2016velky}.
 %Asymmetric cryptography, itself, does not solve the authenticity of the public key. It is necessary to decide whether the given public key belongs to given entity. The solution of this problem is the infrastructure of the public key \cite{dostalek2016velky} which is nowadays the most widespread means of ensuring the credibility of the digital signature.
 
 The main advantages of asymmetric cryptography are mainly a smaller number of keys than 
@@ -456,6 +490,57 @@ support for type inheritance, method or operator overloading, circular dependenc
 packages, pointer arithmetic, assertions nor for generic programming.
 
 \section{Packages}
+In Go, source files are organized into system directories called packages. To  develop 
+software applications, writing maintainable and reusable pieces of code is very important. Go 
+provides the modularity and code reusability through it’s package system. Go encourages 
+programmers to write small pieces of software components through packages, and compose their  
+applications with these small packages.
+
+The packages from the standard library are available at the “pkg” subdirectory of the GOROOT 
+directory. When we install Go, an environment variable GOROOT will be automatically added to 
+our system for specifying the Go installer directory. The Go developer community is very 
+enthusiastic for developing third-party Go packages. When you develop Go applications, you can 
+leverage these third-party Go packages \cite{stack_2014}.
+
+When programmers develop executable programs, they will use the package “main” for making the 
+package as an executable program. The package “main” tells the Go compiler that the package 
+should compile as an executable program instead of a shared library. When programmers build 
+shared libraries, they will not have any main package and main function in the package.
+
+To download third-party Go packages is used command: 
+\begin{lstlisting}
+go get example/exampleLib
+\end{lstlisting}
+After installing the exampleLib, put the import statement in programs for reusing the code, as 
+shown below:
+\begin{lstlisting}
+package db
+import (
+	"example/exampleLib"
+	"example/exampleLib/sub"
+)
+func init {
+	// initialization code here    
+}
+\end{lstlisting}
+To install third-party Go packages is used command: 
+\begin{lstlisting}
+go install
+\end{lstlisting}
+The go install command will build the package “sub” which will be available at the pkg 
+subdirectory of GOPATH.
+\begin{lstlisting}
+package main
+import (
+	"fmt"
+	"example/exampleLib/sub"
+)
+func main() {
+    sub.Add("dr","Dart")
+    fmt.Println(sub.Get("dr"))
+    // code here    
+}
+\end{lstlisting}
 
 \subsection{Crypto}
 Package crypto collects common cryptographic constants.
@@ -535,14 +620,30 @@ fnv & implements FNV-1 and FNV-1a, non-cryptographic hash functions created by G
 \end{table}
 % ZDROJ: https://golang.org/pkg/
 
+\chapter{Analysis}
+It was necessary to examine features of language GO related safety and cryptography, analyze 
+libraries which GO contains and also search for available third-party libraries. This chapter 
+contains the overview, evaluate and compare existing cryptographic liberates base on their 
+measures and next base on expansion measures important for implementation.
 
-
-
-\chapter{New chapter}
+Table \ref{table:analysis} shows analyzed Go package Crypto created by Golang and other Go 
+packages created by third-parties. Individually items mean:
+\vskip0.1in
+\begin{itemize}[leftmargin=2em,rightmargin=1em,itemsep=0.75\parskip,parsep=0em,topsep=0em,partopsep=0em]
+\item Name - name of founder and package.
+\item Cryptographic functions - support cryptographic functions, such as symmetric encryption, asymmetric encryption and hash functions (all/sym/asym/hash/unknown).
+\item Start of project - a year of creating project.
+\item Is still opened - contributors still work on the project (Yes/No).
+\item Issue tracker system - support of solving bugs, feature requests, tracking todos, and more (Yes/No).
+\item Documentation accessibility - assessed on a scale of 0-5 (5 is the highest).
+\item Downloads - number of downloads. In case the package is saved on \textit{https://github.com/}, the information about downloads presents value of Fork. Downloads of package Crypto created by Golang is unknown, this package is automatically installed with installing program Go.  
+\item License - availability of licenses for free (Yes/Payment). The payment indicates the amount of payment per some period. This case did not occur.
+\end{itemize}
+\vskip0.1in
 
 \begin{center}
 \begin{longtable}[th]{|P{1.6cm}P{1cm}P{1cm}P{1cm}P{1.3cm}P{1.3cm}P{1.2cm}P{1.1cm}|}
-\caption{Table of all cryptographic libraries in GO} \label{table:1} \\
+\caption{Table of cryptographic libraries in Go} \label{table:analysis} \\
 
 \hline Name & Crypto. functions & Start of project & Is still opened & Issue tracker system & Doc. accessability & Down-loads & License\\ \hline 
 \endfirsthead
@@ -558,7 +659,7 @@ fnv & implements FNV-1 and FNV-1a, non-cryptographic hash functions created by G
 \hline \hline
 \endlastfoot
 
-golang/ crypto & Y & 2009 & Y & Y & 5 &  & Y\\ 
+golang/ crypto & all & 2009 & Y & Y & 5 & - & Y\\ 
 %go-lang. cat-v.org/ pure-go-libs & N & \footnote{Page ceased updating in October, 2012} & & & & & Y \\ 
 %golang libs.com category cryptography & Y & not all & 2012-2016 & some & & & \\
 %golang libs.com category security & Y & not all & 2013-2016 & some & & & \\
@@ -577,7 +678,7 @@ go-libp2p-crypto & all & 2015 & Y & Y & 4 & 5 & Y \\
 dchest/ blake2s & hash & 2012 & N & N & 3 & 3 & Y \\
 benburkert/ openpgp & sym, hash & 2012 & N & N & 3 & 0 & Y \\
 minio/ sha256-simd & hash & 2016 & Y & Y & 3 & 14 & Y \\
-avelino/ awesome-go & un-known & 2014 & Y & Y & 4 & 2287 & Y \\
+avelino/ awesome-go & un-known & 2014 & Y & Y & 2 & 2287 & Y \\
 ethereum/ go-ethereum & all & 2013 & Y & Y & 4 & 1028 & Y \\
 chain/ chain & hash & 2015 & Y & Y & 4 & 113 & Y \\
 lightning network/lnd & sym, hash & 2015 & Y & Y & 4 & 50 & Y \\
@@ -593,6 +694,60 @@ golang/ oauth2 & asym, hash & 2014 & Y & Y & 4 & 279 & Y
 %%% https://godoc.org/golang.org/x/crypto
 %%% https://golang.org/pkg/
 %%% ?
+
+The table \ref{table:analysis} was created on the base of information available on 
+following websites \cite{security-golibrariesAndApps} \cite{cryptography-golibrariesAndApps} \cite{crypto-godoc} \cite{packages-thegoprogramminglanguage}. The 
+table does not contain packages which do not support any cryptographic functions. Also, 
+the table does not contain information from untrusted sources. During the analysis, I 
+discovered sources which are not actual or supported \cite{puregolibs}.
+
+The next step of analysis was select the libraries which fulfill the requirements. The important 
+parameters were the support of all cryptographic functions, the topicality of project, the 
+approach to solving problems and no payment license. In the table \ref{table:analysis2}, 
+there are shown four libraries and compared to the base of the other measures:
+\vskip0.1in
+\begin{itemize}[leftmargin=2em,rightmargin=1em,itemsep=0.75\parskip,parsep=0em,topsep=0em,partopsep=0em]
+\item Crypto. key - possibilities for generation of cryptographic keys (Yes/No),
+\item X.509 Certificates - work with X.509 certificates (generation of self-signed certificates, support for certificate signing requests, support for different formats and extensions) (Yes/No),
+\item SSL/TLS - support of higher level protocols such as SSL/TLS (Yes/No),
+\item Use go lang crypto - dependence on Crypto package created by Golang (Yes/No/-).
+\end{itemize}
+\vskip0.1in
+\begin{sidewaystable}
+%\centering
+\begin{tabular}{|P{2.23cm} P{1cm}P{1cm}P{1cm}P{1.3cm}P{1.3cm}P{1.15cm}P{1.05cm} P{1cm} P{1.3cm} P{0.95cm} P{1.12cm}|}
+\hline
+Name & Crypto. functions & Start of project & Is still opened & Issue tracker system & Doc. accessability & Down-loads & License & Crypto. keys & X.509 Certificates & SSL/ TLS & Use Golang Crypto \\
+\hline
+crypto & all & 2009 & Y & Y & 5 & - & Y & Y & Y & Y & - \\ [3ex]
+SermoDigital/ jose & all & 2015 & Y & Y & 4 & 28 & Y & Y & Y & N & Y \\ [3ex]
+go-libp2p-crypto & all & 2015 & Y & Y & 4 & 5 & Y & Y & Y & N & Y \\ [3ex]
+ethereum/go-ethereum & all & 2013 & Y & Y & 4 & 1028 & Y & Y & Y & N & Y \\ [3ex]
+\hline
+\end{tabular}
+\caption{Filtered table of cryptographic libraries in Go} 
+\label{table:analysis2} 
+\end{sidewaystable}
+
+%Based on observed data I decided to use Crypto packages created by Goland for implementation.
+
+%\begin{table}[th]
+%\begin{tabular}{|P{5cm} P{1.5cm} P{1.5cm} P{1.5cm} P{1.5cm}|}
+%\hline
+%Name & Crypto. keys & X.509 Certificates & SSL/TLS & use go crypto \\
+%\hline
+%crypto & Y & Y & Y & Y \\
+%SermoDigital/jose & Y & Y & N & Y \\
+%libp2p/go-libp2p-crypto & Y & Y & N & Y \\
+%ethereum/go-ethereum & Y & Y & N & Y \\
+%\hline
+%\end{tabular}
+%\caption{Filtered table of cryptographic libraries in Go with other measures} 
+%\label{table:analysis2} 
+%\end{table}
+
+%\chapter{Implementation}
+
 
 
 \printbibliography
