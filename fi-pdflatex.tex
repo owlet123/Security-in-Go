@@ -76,30 +76,26 @@
 \usepackage{markdown} %% Lightweight Markup
 
 %added usepackages
-\usepackage{rotating} %rotate table?
-%\newcommand*{\TitleInParbox}{\parbox[c]{0.3\linewidth}{\Title}}
-\usepackage{longtable}
+\usepackage{rotating} %rotate table
+\usepackage{longtable} %rozdelit tabulku na viac stran
 \usepackage{array}
 \newcolumntype{P}[1]{>{\centering\arraybackslash}p{#1}}
 \usepackage{enumitem}
-\usepackage{graphicx,lipsum,wrapfig}
+\usepackage{graphicx,lipsum,wrapfig} %obrazok obtekany textom
 \usepackage{footnote}
-\usepackage{listings}
-
+\usepackage{listings} %programovacia cast + nasledovne nastavenia
 \usepackage{color}
-
 %New colors defined below
 \definecolor{codegreen}{rgb}{0,0.6,0}
 \definecolor{codegray}{rgb}{0.5,0.5,0.5}
 \definecolor{codepurple}{rgb}{0.58,0,0.82}
 \definecolor{backcolour}{rgb}{0.95,0.95,0.92}
-
 %Code listing style named "mystyle"
 \lstdefinestyle{mystyle}{
   backgroundcolor=\color{backcolour},   commentstyle=\color{codegreen},
-  %keywordstyle=\color{magenta},
+  keywordstyle=\color{magenta},
   numberstyle=\tiny\color{codegray},
-  %stringstyle=\color{codepurple},
+  stringstyle=\color{codepurple},
   basicstyle=\footnotesize,
   breakatwhitespace=false,         
   breaklines=true,                 
@@ -112,10 +108,10 @@
   showtabs=false,                  
   tabsize=2
 }
-
 %"mystyle" code listing set
 \lstset{style=mystyle}
 
+\usepackage{verbatim} %comment
 
 
 
@@ -124,46 +120,28 @@
 
 
 \chapter{Basic Terms}
-In this section, I define the basic terms which are necessary to an understanding of the text 
-presented in the following chapters. First I explain the symmetric and asymmetric 
-cryptography, X.509 certificates, protocols SSL and TLS. Finally, I describe TLS\_PSK, which 
-is indispensable for working with ......
+In this section, I will define the basic terms which are necessary to an understanding of the 
+text presented in the following chapters. First %I will explain the symmetric and asymmetric cryptography and hash functions. 
+I will describe the structure of certificates, standard X.509, certificate authority and 
+signing process. I will explain self-signed certificate, PEM and DER formats, and the process 
+of certificate exchange. Finally, I will describe protocols SSL/TLS and TLS\_PSK used in the 
+application.
+
+\begin{comment}
 
 \section{Cryptography}
 Cryptography is the study of mathematical techniques related to aspects of information
 security such as confidentiality, data integrity, entity authentication, and data origin
-authentication \cite{menezes1996handbook}. %Together with cryptanalysis, which is engaged in deciphering codes without the secret knowledge key, is the part of science called cryptology.
-%\vskip 0.2in
-%Already in the nineteenth century, Auguste Kerckhoffs formulated the principle which has been true in cryptography today. Safety of cryptosystem must not depend on the secrecy of the algorithm. It must be publicly known, and security must depend only on the secret key \cite{menezes1996handbook}. 
-Today we talk about computer security which consists in the fact that the attacker does not 
-have enough computational strength and time to decode the cipher. 
-%Discrete logarithm and factorization of large numbers belong to the issues for which there is no effective algorithm today.
-%\vskip 0.2in
-We can divide cryptography base on the type of keys into three parts. They are symmetric 
-cryptography, asymmetric cryptography, and other primitives %, for example, hash functions, one-way permutation or random number generators
-\cite{menezes1996handbook}.
-
-%%OBRAZOK
-%\begin{figure}[th]
-%	\centering
-%	\includegraphics[width=0.82\textwidth]{securityPrimitives}
-%	\caption{A taxonomy of cryptographic primitives}
-%	\label{fig:secPrim}
-%\end{figure}
-%%info handbook strana 23
+authentication \cite{menezes1996handbook}.Today we talk about computer security which consists 
+in the fact that the attacker does not have enough computational strength and time to decode 
+the cipher.
 
 \subsection{Symmetric Cryptography}
-%The beginnings of symmetric cryptography date back to around 2000 BC.\cite{singh2011code}. 
 Symmetric encryption, as the name suggests, means that the encryption and decryption of 
-plaintext are based on sharing a together secret - keys. The secret key could be a number, a 
-word or just string of random letters. %This problem, however, stems directly from the provisions of a mystery. The problem of secure transfer of the message, in this case, is only converted to the issue of secure transmission of secret keys. This situation we can solve by other means, such as personal meetings or any infrastructure provided key distribution. Globally, all similar approaches proved to be unsuitable \cite{singh2011code}.
-%\vskip 0.2in 
-
+plaintext are based on sharing a together secret - keys.
 Symmetric ciphers could be divided into block and stream. Stream ciphers encrypt each 
 character of plaintext separately, usually one bit. Block ciphers encrypt plaintext into 
-blocks with fixed bit length \textit{n}. %Messages, which have more than \textit{n} bits, are separated into \textit{n}-bit blocks and then they are encrypted. 
-%We distinguish several basic modes, such as ECB (Electronic Codebook), CBC (Cipher Block Chaining), CFB (Cipher Feedback) and OFB (Output Feedback), CTR (Counter Mode) \cite{piper2006kryptografie}.
-%Stream ciphers are typically faster and easier for hardware implementation. They are often used in telecommunication applications, where we can use a very limited buffer. Their using is also advantageous in environment where is a significant probability of errors in the transmission because there is no propagation of this error to other data. In turn, block ciphers can perform the function Message Authentication Code (MAC) or hash functions.
+blocks with fixed bit length \textit{n}.
 
 The main disadvantage of symmetric cryptography is the necessity of a large number of keys 
 and need of their distribution. For example, for together communication \textit{n} operators 
@@ -175,21 +153,17 @@ Their using is also useful in cases where the encrypted data are not sent anywhe
 example, to protect files on a personal computer.
  
 \subsection{Asymmetric Cryptography}
-%Unlike symmetric cryptography, asymmetric cryptography is very young. Its origins could be found in 1977 when the RSA cryptosystem was created based on the impossibility of effectively factorize of large numbers. In fact, the beginning of asymmetric cryptography was established a few years earlier by Clifford Cocks. His research, however, was still kept secret until recently \cite{singh2011code}.
-%\vskip0.2in
 Asymmetric cryptography allows data encryption and particularly the implementation of the 
 digital signature. Each entity has two keys. The first is the private key that is used to 
 decrypt a message or create a digital signature. It must be kept secret. The second key is 
 public which is used for encryption and authentication of the digital signature. Of course, 
 there is impossible to derive the private key from the public key \cite{dostalek2016velky}.
-%Asymmetric cryptography, itself, does not solve the authenticity of the public key. It is necessary to decide whether the given public key belongs to given entity. The solution of this problem is the infrastructure of the public key \cite{dostalek2016velky} which is nowadays the most widespread means of ensuring the credibility of the digital signature.
 
 The main advantages of asymmetric cryptography are mainly a smaller number of keys than 
 symmetric cryptography. If each entity has one public and one private key, it means that for 
 \textit{n} entities are needed \textit{2n} keys. In the same situation as in the previous 
 example, a company of 50 employees would need to ensure the safety of 100 keys, which is 
 substantially less than 1225.
-%\vskip0.2in
 
 The biggest disadvantage of asymmetric cryptography is its slowness compared with symmetric 
 cryptography. Therefore, they are most often used together, while the text is encrypted with a 
@@ -200,7 +174,6 @@ signed using asymmetric cryptography.
 \subsection{Hash Function}
 Hash functions are one of the basic elements of modern cryptography, often called one-way 
 hash function.
-%\vskip0.2in
 
 Hash functions are effectively designed display binary strings unlimited length to binary 
 strings a fixed length, called hash value. For a perfect hash function that has \textit{n}-bit 
@@ -216,12 +189,14 @@ and for digital signing of data \cite{piper2006kryptografie}.
 
 ITEMIZE
 
+\end{comment}
+
 \section{Certificate}
 Certificate is digitally signed data structure whose foundation includes a public key of
-certificate owner. There are some standards of structure the certificate (X.509, EDI, WAP, 
-etc.). The Internet is based on standard X.509 version 3, which issued the ITU. For the needs 
-of the Internet, there is created an Internet profile of X.509 in the relevant RFC. Current 
-Internet profile certificate is standard RFC-5280 \cite{dostalek2016velky}.
+certificate owner. There are some standards of the certificate structure (X.509, EDI, WAP, 
+etc.). The Internet is based on standard X.509 version 3, which was issued by the ITU. For the 
+needs of the Internet, there is created an Internet profile of X.509 in the relevant RFC. 
+Current Internet profile certificate is standard RFC-5280 \cite{dostalek2016velky}.
 
 \subsection{Standard X.509}
 Standard X.509 was originally designed as an authentication framework for X.500 
@@ -315,7 +290,7 @@ PEM file containing a private key and a certificate \ref{fig:vzorPEM-DER}.
 \begin{figure}[th]
 	\centering
 	\includegraphics[width=1\textwidth]{pem-der}
-	\caption{A sample example of DER and PEM file}
+	\caption{A sample example of certificate}
 	\label{fig:vzorPEM-DER}
 \end{figure}
 
@@ -347,11 +322,11 @@ The certificate request should include:
   \item One-time password for issuing the certificate
   \item One-time password for certificate revocation
   \item Permanent password for personal (non-electronic) communication between user and CA
-  \item Phrase (in case losing every passwords) 
+  \item Phrase (in case losing all passwords) 
   \end{itemize}
 \end{itemize} 
 
-\subsection{PROCESY - podpisovanie a cert. exchange}
+\subsection{Certificate exchange}
 
 
 \section{Protocols SSL and TLS}
@@ -465,7 +440,11 @@ the fact that the PSK identity was not known, it may continue the protocol as if
 identity existed but the key was incorrect: that is, respond with \textit{a decrypt\_error 
 alert} \cite{eronen2005pre}. 
 
-\chapter{Language GO}
+\chapter{Language Go}
+In this chapter I will explain the main characters of language Go and show how to write the 
+code. The next I will describe Go libraries called packages and the tool cgo.
+
+\section{Introduction}
 Go is a programming language developed at \textit{Google} in year 2007 and announced in 
 November 2009. Many companies have started using Go because of its performance, simplicity, 
 ease of use and powerful tooling. Go programming language is a statically-typed language with 
@@ -489,10 +468,65 @@ Go excluded some features intentionally to keep language simple and concise. The
 support for type inheritance, method or operator overloading, circular dependencies among 
 packages, pointer arithmetic, assertions nor for generic programming.
 
+\section{How to Start}
+\subsection{Installation}
+Golang, the go official website, provides the installer of Go to download free for Windows, 
+Linux, Mac OS X and FreeBSD tarballs. To confirm everything is working, open a terminal and 
+type the following:
+\begin{lstlisting}
+go version
+\end{lstlisting}
+Upgrading from an older version of Go must be precessed by removing the existing version. 
+
+\subsection{Enviroment}
+The Go toolset uses an environment variable called GOPATH to find Go source code. 
+
+Set up your workplace, for example GOPATH=C:$\backslash$Projects$\backslash$Go$\backslash$.
+
+\subsection{First Program}
+Traditionally, the first program in any programming language is called a
+hello program — a program that simply outputs "Hello World!" to terminal.
+
+Open text editor, create file $hello.go$, and enter the following:
+\begin{lstlisting}
+package main
+import "fmt"
+// this is a comment
+func main() {
+	fmt.Println("Hello World!")
+}
+\end{lstlisting}
+Make you sure the file is identical to what is shown here and save it.
+
+\subsection{Compilation}
+Go is a compiled language, and like many languages, it makes heavy use of the command
+line. Open up a new terminal, set up directory where you saved the file $hello.go$ and type in 
+the following:
+\begin{lstlisting}
+go run hello.go
+\end{lstlisting}
+You should see Hello World! displayed in your terminal.
+
+\subsection{Arguments}
+Command-line arguments are a common way to parameterize execution of programs. To build a 
+binary with go build first.
+\begin{lstlisting}
+go build cmd-arguments.go
+./cmd-arguments a b c
+\end{lstlisting}
+In code, $os.Args$ provides access to raw command-line arguments. The first valueis the path 
+to the program, and os.Args[1:] holds the arguments to the program.
+\begin{lstlisting}
+argsWithProg := os.Args
+argsWithoutProg := os.Args[1:]
+arg := os.Args[3]
+\end{lstlisting}
+Do not forget to import package $os$.
+
 \section{Packages}
 In Go, source files are organized into system directories called packages. To  develop 
 software applications, writing maintainable and reusable pieces of code is very important. Go 
-provides the modularity and code reusability through it’s package system. Go encourages 
+provides the modularity and code reusability through it is package system. Go encourages 
 programmers to write small pieces of software components through packages, and compose their  
 applications with these small packages.
 
@@ -541,6 +575,48 @@ func main() {
     // code here    
 }
 \end{lstlisting}
+
+\section{C? Go? Cgo!}
+Cgo allows Go to interoperate with C code. Go source file imports~"C" and it is immediately 
+preceded by comment lines which may contain any C code, including function and variable 
+declarations and definitions. It is necessary to say that there must be no blank lines in 
+between the cgo comment and the import statement. 
+
+\begin{lstlisting}
+package main
+/*
+#include <stdio.h>
+
+void hello() {
+	printf("Hello World!\n");
+}
+*/
+import "C"
+
+func main() {
+	C.hello()
+}
+\end{lstlisting}
+
+Cgo allows including own C libraries. The header file $foo.h$, the library implementation 
+$foo.c$ and go wrapper $foo.go$ are located in the same package $\$GOPATH\backslash 
+src\backslash foo$. 
+\begin{lstlisting}
+#cgo CFLAGS: -I/{$GOPATH}/src/foo
+#cgo LDFLAGS: -L/{$GOPATH}/src/foo -lfoo
+\end{lstlisting}
+Go wrapper contains the explicit paths in the cgo flags because of an environment issue where 
+libfoo wasn’t found by the Go linker.
+\begin{lstlisting} 
+go install foo 
+\end{lstlisting}
+We install package and all is prepared for using in Go. Package is called in Go code through 
+$import "foo"$.
+
+In order to use cgo on Windows, we will also need to first install a gcc compiler and have 
+$gcc.exe$ in PATH environment variable before compiling with cgo will work.
+
+\begin{comment}
 
 \subsection{Crypto}
 Package crypto collects common cryptographic constants.
@@ -619,6 +695,8 @@ fnv & implements FNV-1 and FNV-1a, non-cryptographic hash functions created by G
 \label{table:hash} 
 \end{table}
 % ZDROJ: https://golang.org/pkg/
+
+\end{comment}
 
 \chapter{Analysis}
 It was necessary to examine features of language GO related safety and cryptography, analyze 
@@ -713,6 +791,9 @@ there are shown four libraries and compared to the base of the other measures:
 \item Use go lang crypto - dependence on Crypto package created by Golang (Yes/No/-).
 \end{itemize}
 \vskip0.1in
+
+\begin{comment}
+
 \begin{sidewaystable}
 %\centering
 \begin{tabular}{|P{2.23cm} P{1cm}P{1cm}P{1cm}P{1.3cm}P{1.3cm}P{1.15cm}P{1.05cm} P{1cm} P{1.3cm} P{0.95cm} P{1.12cm}|}
@@ -729,22 +810,32 @@ ethereum/go-ethereum & all & 2013 & Y & Y & 4 & 1028 & Y & Y & Y & N & Y \\ [3ex
 \label{table:analysis2} 
 \end{sidewaystable}
 
-%Based on observed data I decided to use Crypto packages created by Goland for implementation.
+\end{comment}
 
-%\begin{table}[th]
-%\begin{tabular}{|P{5cm} P{1.5cm} P{1.5cm} P{1.5cm} P{1.5cm}|}
-%\hline
-%Name & Crypto. keys & X.509 Certificates & SSL/TLS & use go crypto \\
-%\hline
-%crypto & Y & Y & Y & Y \\
-%SermoDigital/jose & Y & Y & N & Y \\
-%libp2p/go-libp2p-crypto & Y & Y & N & Y \\
-%ethereum/go-ethereum & Y & Y & N & Y \\
-%\hline
-%\end{tabular}
-%\caption{Filtered table of cryptographic libraries in Go with other measures} 
-%\label{table:analysis2} 
-%\end{table}
+\begin{table}[th]
+\begin{tabular}{|P{2.3cm}|P{1.1cm} P{2.4cm} P{2.4cm} P{2.4cm}|}
+\hline
+ & crypto & SermoDigital/ jose & go-libp2p-crypto & ethereum/go-ethereum \\ [2ex]
+%Name & Crypto. functions & Start of project & Is still opened & Issue tracker system & Doc. accessability & Down-loads & License & Crypto. keys & X.509 Certificates & SSL/ TLS & Use Golang Crypto
+\hline
+Crypto. functions & all & all & all & all \\ [4ex]
+Start of project & 2009 & 2015 & 2015 & 2013 \\ [4ex]
+Is still opened & Y & Y & Y & Y \\ [4ex]
+Issue tracker system & Y & Y & Y & Y \\ [4ex]
+Doc. accessability & 5 & 4 & 4 & 4 \\ [4ex]
+Downloads & - & 28 & 5 & 1028 \\ [2ex]
+License & Y & Y & Y & Y \\ [2ex]
+Crypto. keys & Y & Y & Y & Y \\ [4ex]
+X.509 Certificates & Y & Y & Y & Y \\ [4ex]
+SSL/ TLS & Y & N & N & N \\ [2ex]
+Use Golang Crypto & - & Y & Y & Y \\ [4ex]
+\hline
+\end{tabular}
+\caption{Filtered table of cryptographic libraries in Go with other measures} 
+\label{table:analysis23} 
+\end{table}
+
+%Based on observed data I decided to use Crypto package created by Golang for implementation.
 
 %\chapter{Implementation}
 
