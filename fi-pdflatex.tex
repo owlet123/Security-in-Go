@@ -27,7 +27,7 @@
   main=english, %% By using `czech` or `slovak` as the main locale
                 %% instead of `english`, you can typeset the thesis
                 %% in either Czech or Slovak, respectively.
-  german, russian, czech, slovak %% The additional keys allow
+  slovak %% The additional keys allow
 ]{babel}        %% foreign texts to be typeset as follows:
 %%
 %%   \begin{otherlanguage}{german}  ... \end{otherlanguage}
@@ -78,8 +78,14 @@
 %added usepackages
 \usepackage{rotating} %rotate table
 \usepackage{longtable} %rozdelit tabulku na viac stran
+
+\usepackage[table]{xcolor}
 \usepackage{array}
-\newcolumntype{P}[1]{>{\centering\arraybackslash}p{#1}}
+\newcolumntype{P}[1]{>{\centering\arraybackslash\columncolor[HTML]{E9E9E9}}m{#1}}
+\newcolumntype{Q}[1]{>{\centering\arraybackslash\columncolor[HTML]{FFF0F0}}m{#1}}
+\definecolor{myColor}{RGB}{255,240,240} %pink
+\definecolor{myColor2}{RGB}{233,233,233} %grey
+\usepackage[flushleft]{threeparttable} %note in table
 \usepackage{enumitem}
 \usepackage{graphicx,lipsum,wrapfig} %obrazok obtekany textom
 \usepackage{footnote}
@@ -114,13 +120,12 @@
 \usepackage{verbatim} %comment
 
 
-
 \begin{document}
 \chapter{Introduction}
 
 
 \chapter{Basic Terms}
-In this section, I will define the basic terms which are necessary to an understanding of the 
+In this chapter, I will define the basic terms which are necessary to an understanding of the 
 text presented in the following chapters. First %I will explain the symmetric and asymmetric cryptography and hash functions. 
 I will describe the structure of certificates, standard X.509, certificate authority and 
 signing process. I will explain self-signed certificate, PEM and DER formats, and the process 
@@ -194,17 +199,16 @@ ITEMIZE
 \section{Certificate}
 Certificate is digitally signed data structure whose foundation includes a public key of
 certificate owner. There are some standards of the certificate structure (X.509, EDI, WAP, 
-etc.). The Internet is based on standard X.509 version 3, which was issued by the ITU. For the 
-needs of the Internet, there is created an Internet profile of X.509 in the relevant RFC. 
-Current Internet profile certificate is standard RFC-5280 \cite{dostalek2016velky}.
+etc.). The Internet is based on standard X.509 version 3, which was issued by the ITU \cite{dostalek2016velky}. %For the needs of the Internet, there is created an Internet profile of X.509 in the relevant RFC. Current Internet profile certificate is standard RFC-5280 \cite{dostalek2016velky}.
 
 \subsection{Standard X.509}
 Standard X.509 was originally designed as an authentication framework for X.500 
 directories \cite{schmeh2006cryptography}. They have a hierarchical structure and the 
 individual attributes can be assigned to individual computers of companies or individual 
-printers. That is, each entity can be clearly identified, and each can have its private and 
-public key. The proposal envisages the hierarchical structure of certificate authorities. 
+printers. % That is, each entity can be clearly identified, and each can have its private and public key.
 Certificate X.509, see Figure \ref{fig:certificate}.
+
+\begin{comment}
 \vskip 0.1in
 The first version of the X.509 standard was already appeared in 1988 as the first proposal for 
 PKI \cite{schmeh2006cryptography}. The first version was very simple and today is already 
@@ -221,9 +225,8 @@ inadequate. It contained only 7 fields:
 \end{itemize}
 \vskip 0.1in
 The second version was introduced five years later in 1993 and brought only minimal changes. 
-The second version did not solve the problems associated with the first version. Fields which 
-was needed in this version, still missing \cite{schmeh2006cryptography}. It contained only two 
-new fields:
+Fields which was needed in this version, still missing \cite{schmeh2006cryptography}. It 
+contained only two new fields:
 \vskip 0.1in
 \begin{itemize}[leftmargin=2em,rightmargin=1em,itemsep=0.75\parskip,parsep=0em,topsep=0em,partopsep=0em]
 \item unique identifier of the certificate owner;
@@ -231,37 +234,30 @@ new fields:
 \end{itemize}
 \vskip 0.1in
 The third version was introduced in 1996. Its biggest and most important benefit is to support 
-the expansion. It is defined a syntax that allows you to create custom certificate extension. 
-It eliminates the major shortcomings of the two previous versions, but then appears some 
-incompatibility. 
-
+the expansion. It eliminates the major shortcomings of the two previous versions \cite{housley2002internet}.
+\end{comment}
 \begin{figure}[th]
 	\centering
-	\includegraphics[width=1\textwidth]{certificate}
+	\includegraphics[width=1.05\textwidth]{certificate}
 	\caption{Structure X.509 Certificate}
 	\label{fig:certificate}
 \end{figure}
-%% Zdroj info o obrazku:
-% @techreport{housley2002internet,
-%   title={Internet X. 509 public key infrastructure certificate and % certificate revocation list (CRL) profile},
-%   author={Housley, Russell and Polk, William and Ford, Warwick and Solo, David},
-%  year={2002}
-% }
-
-%To the protocols which mostly use X.509 certificates, belongs primarily SSL, TLS.
 
 \subsection{Certificate Authority}
-Certification Authority (CA) is an independent third party that issues certificates. 
+The Certification Authority (CA) is an independent third party that issues certificates.
 
-In other words, the CA is an institution which inspects the certificate request and issues 
-certificates whose validity is verifiable using the responsive public key. The CA also takes 
-care of archiving and distribution of certificates checks their validity and ensures their 
-revocation. To the CA is truly credible, it must be impartial and, if it is possible, it 
-should be subordinate any higher CA. Subordination means that it identifies using a 
-certificate signed by the certification authority higher level \cite{dostalek2016velky}.
+In other words, the CA is an institution that inspects the certificate request and issues whose 
+validity is verifiable using the responsive public key. The CA was created in 1998 in order to 
+ensure secure encryption through a certified public key and guarantee the validity of the digital 
+signature. The CA also ensures their validity revocation. The CA is truly credible, must be 
+impartial and, if it is possible, should be subordinate to any higher CA. Subordination means that 
+it identifies using certificates signed by the higher certificate authority 
+\cite{dostalek2016velky}.
 
 Root CA, certification authorities at the highest level, uses the certificate signed by 
 themselves (self-signed certificate).
+
+\nocite{singh2003kniha}
 
 \subsection{Self-signed Certificate}
 The self-signed certificate is a certificate which the applicant gives by itself. The 
@@ -281,35 +277,11 @@ be issued by the CA, the public key must be kept by the applicants. In this case
 key is often maintained like a self-signed certificate. Subsequently it is rewritten by the 
 certificate.
 
-\subsection{Formats PEM and DER}
-The PEM (Privacy Enhanced Mail) is a Base64 encoded DER certificate. It is designed 
-to be safe for inclusion in ASCII or even rich-text documents. This means that we can simple 
-copy and paste the content of a pem file to another document and back. Following is a sample 
-PEM file containing a private key and a certificate \ref{fig:vzorPEM-DER}.
-
-\begin{figure}[th]
-	\centering
-	\includegraphics[width=1\textwidth]{pem-der}
-	\caption{A sample example of certificate}
-	\label{fig:vzorPEM-DER}
-\end{figure}
-
-A certificate or key must start with header and the number of dashes is meaningful, and must 
-be correct. A single PEM file can contain a number of certificates and a key, for example, a 
-single file with public certificate, intermediate certificate, root certificate or private key 
-\cite{howToSsl}.
-
-The DER (Distinguished Encoding Rules) is a binary form of ASCII PEM format 
-certificate. All types of certificates and private keys can be encoded in DER format, its 
-information is stored in the binary DER for ASN.1 and applications providing RSA, SSL and TLS 
-should handle DER encoding to read in the information \cite{bakker_2014}.
-
 \subsection{Certificate Signing Request}
-The certificate authority must fill individual items of the certificate duly before it signs 
-the result digitally. The certificate applicant can apply in two ways: submit a data 
-structure called a certificate request or not so \cite{dostalek2016velky}.
+The certificate applicant can apply CA to sign certificate in two ways: submit a data structure 
+called a certificate request (CSR) or not so \cite{dostalek2016velky}. 
 
-The certificate request should include:
+The most common format is PKCS\#10. The CSR should include:
 \begin{itemize}[leftmargin=2em,rightmargin=1em,itemsep=0.75\parskip,parsep=0em,topsep=0em,partopsep=0em]
 \item Applicant ID
 \item The public key
@@ -326,8 +298,31 @@ The certificate request should include:
   \end{itemize}
 \end{itemize} 
 
-\subsection{Certificate exchange}
+The certificate authority must fill individual items of the certificate before it signs 
+the result digitally. The CA takes CSR, checks completed items and fills the other. The important item is validity period - the time while the certificate is valid. It is shown in two items - not before and not after. The CA can add extensions, such as Subject Alternative Name, information about CA, etc. (see figure \ref{fig:certificate}).
 
+\subsection{Formats PEM and DER}
+The PEM (Privacy Enhanced Mail) is a Base64 encoded DER certificate. It is designed 
+to be safe for inclusion in ASCII or even rich-text documents. This means that we can simple 
+copy and paste the content of a pem file to another document and back. Following is a sample 
+PEM file containing a private key and a certificate \ref{fig:vzorPEM-DER}.
+
+\begin{figure}[th]
+	\centering
+	\includegraphics[width=1\textwidth]{pem-der}
+	\caption{A sample example of certificate view}
+	\label{fig:vzorPEM-DER}
+\end{figure}
+
+A certificate or key must start with header and the number of dashes is meaningful, and must 
+be correct. A single PEM file can contain a number of certificates and a key, for example, a 
+single file with public certificate, intermediate certificate, root certificate or private key 
+\cite{howToSsl}.
+
+The DER (Distinguished Encoding Rules) is a binary form of ASCII PEM format 
+certificate. All types of certificates and private keys can be encoded in DER format, its 
+information is stored in the binary DER for ASN.1 and applications providing RSA, SSL and TLS 
+should handle DER encoding to read in the information \cite{bakker_2014}.
 
 \section{Protocols SSL and TLS}
 Protocols SSL and TLS are used for secure communications between client and server. They 
@@ -397,19 +392,28 @@ TLS uses public key certificates for authentication. To establish a TLS connecti
 symmetric keys (later called pre-shared keys or PSKs), shared in advance among the 
 communicating parties \cite{eronen2005pre}.
 
-\subsection{PSK Key Exchange Algorithm}
-The cipher suites with PSK key exchange algorithm, use only symmetric key algorithms and are 
-thus especially suitable for performance-constrained environments where both ends of the 
+\subsection{PSK Key Exchange Algorithm}\label{pskAlgorithm}
+The cipher suites with the PSK key exchange algorithm use only symmetric key algorithms and 
+are particularly suitable for performance-constrained environments where both ends of the 
 connection can be controlled. The cipher suites are intended for a rather limited set of 
 applications, usually involving only a very small number of clients and servers.
 
-%\begin{figure}[th]
-%	\centering
-%  	\includegraphics[width=0.5\textwidth]{psk}
-%   \caption{TLS PSK}
-%   \label{fig:psk}
-%\end{figure}
+\begin{enumerate}
+\item The client indicates to use pre-shared key authentication by including one or more PSK cipher suites in the \textit{ClientHello} message. 
+\item If the TLS server also wants to use pre-shared keys, it selects one of the PSK cipher suites and places it in \textit{the ServerHello} message. The server can provide a "PSK identity hint" in the \textit{ServerKeyExchange} message. If no hint is provided, the \textit{ServerKeyExchange} message is omitted.
+\item The client indicates which key to use by including a "PSK identity" in the \textit{ClientKeyExchange} message.
+\item The \textit{Certificate} and \textit{CertificateRequest} payloads are omitted from the response.
+\item The TLS handshake is authenticated using the \textit{Finished} messages. 
+\end{enumerate}
 
+\begin{figure}[th]
+	\centering
+  	\includegraphics[width=1\textwidth]{psk-edited}%{tls13-hs-resumption}%{psk}
+   \caption{TLS\_PSK Key Exchange}
+   %\label{fig:psk}
+\end{figure}
+
+\begin{comment}
 \begin{wrapfigure}{r}{0.5\textwidth}
 	\vspace{-20pt}
     \begin{center}
@@ -420,29 +424,17 @@ applications, usually involving only a very small number of clients and servers.
     \vspace{-10pt}
 	%\label{fig:psk}
 \end{wrapfigure}
+\end{comment}
 
-The client indicates its willingness to use pre-shared key authentication by including one or 
-more PSK ciphersuites in \textit{the ClientHello message}. If the TLS server also wants to use 
-pre-shared keys, it selects one of the PSK ciphersuites, places the selected ciphersuite in 
-\textit{the ServerHello message}, and can includes \textit{ServerKeyExchange message}. If 
-\textit{ServerKeyExchange message} is included depends on the server provides to help the 
-client in selecting which identity to use. The server can provide a "PSK identity hint" in 
-\textit{the ServerKeyExchange message}. The client indicates which key to use by including a 
-"PSK identity" in \textit{the ClientKeyExchange message}. If no hint is provided, \textit{the 
-ServerKeyExchange message} is omitted. Both clients and servers may have pre-shared keys with 
-several different parties. The Certificate and CertificateRequest payloads are omitted from 
-the response.
-
-The TLS handshake is authenticated using \textit{the Finished messages} as usual. If the 
-server does not recognize the PSK identity, it may respond with an 
-\textit{unknown\_psk\_identity alert message}.  Alternatively, if the server wishes to hide 
+If the server does not recognize the PSK identity, it may respond with an 
+\textit{unknown\_psk\_identity} alert message.  Alternatively, if the server wishes to hide 
 the fact that the PSK identity was not known, it may continue the protocol as if the PSK 
 identity existed but the key was incorrect: that is, respond with \textit{a decrypt\_error 
 alert} \cite{eronen2005pre}. 
 
-\chapter{Language Go}
+\chapter{Language Go}\label{go}
 In this chapter I will explain the main characters of language Go and show how to write the 
-code. The next I will describe Go libraries called packages and the tool cgo.
+code. Next I will describe Go libraries called packages and the tool Cgo.
 
 \section{Introduction}
 Go is a programming language developed at \textit{Google} in year 2007 and announced in 
@@ -467,11 +459,13 @@ program and simple grammar,
 Go excluded some features intentionally to keep language simple and concise. There is no 
 support for type inheritance, method or operator overloading, circular dependencies among 
 packages, pointer arithmetic, assertions nor for generic programming.
+\nocite{wiki-go}
+\nocite{doxsey2016introducing}
 
-\section{How to Start}
+\section{How to Start}\label{howToStart}
 \subsection{Installation}
 Golang, the go official website, provides the installer of Go to download free for Windows, 
-Linux, Mac OS X and FreeBSD tarballs. To confirm everything is working, open a terminal and 
+Linux, Mac OS X and FreeBSD. To confirm everything is working, open a terminal and 
 type the following:
 \begin{lstlisting}
 go version
@@ -496,7 +490,7 @@ func main() {
 	fmt.Println("Hello World!")
 }
 \end{lstlisting}
-Make you sure the file is identical to what is shown here and save it.
+Make sure the file is identical to what is shown here and save it.
 
 \subsection{Compilation}
 Go is a compiled language, and like many languages, it makes heavy use of the command
@@ -508,14 +502,12 @@ go run hello.go
 You should see Hello World! displayed in your terminal.
 
 \subsection{Arguments}
-Command-line arguments are a common way to parameterize execution of programs. To build a 
-binary with go build first.
+Command-line arguments are a common way to parameterize execution of programs. First must be used go build command to create a binary program.
 \begin{lstlisting}
 go build cmd-arguments.go
 ./cmd-arguments a b c
 \end{lstlisting}
-In code, $os.Args$ provides access to raw command-line arguments. The first valueis the path 
-to the program, and os.Args[1:] holds the arguments to the program.
+In code, $os.Args$ provides access to raw command-line arguments. The first value is the path to the program, and os.Args[1:] holds the arguments to the program.
 \begin{lstlisting}
 argsWithProg := os.Args
 argsWithoutProg := os.Args[1:]
@@ -526,7 +518,7 @@ Do not forget to import package $os$.
 \section{Packages}
 In Go, source files are organized into system directories called packages. To  develop 
 software applications, writing maintainable and reusable pieces of code is very important. Go 
-provides the modularity and code reusability through it is package system. Go encourages 
+provides the modularity and code reusability through its package system. Go encourages 
 programmers to write small pieces of software components through packages, and compose their  
 applications with these small packages.
 
@@ -534,7 +526,7 @@ The packages from the standard library are available at the “pkg” subdirecto
 directory. When we install Go, an environment variable GOROOT will be automatically added to 
 our system for specifying the Go installer directory. The Go developer community is very 
 enthusiastic for developing third-party Go packages. When you develop Go applications, you can 
-leverage these third-party Go packages \cite{stack_2014}.
+affect these third-party Go packages \cite{stack_2014}.
 
 When programmers develop executable programs, they will use the package “main” for making the 
 package as an executable program. The package “main” tells the Go compiler that the package 
@@ -557,7 +549,7 @@ func init {
 	// initialization code here    
 }
 \end{lstlisting}
-To install third-party Go packages is used command: 
+Third-party Go packages are installed by using this command: 
 \begin{lstlisting}
 go install
 \end{lstlisting}
@@ -576,7 +568,7 @@ func main() {
 }
 \end{lstlisting}
 
-\section{C? Go? Cgo!}
+\section{C? Go? Cgo!}\label{cgo}
 Cgo allows Go to interoperate with C code. Go source file imports~"C" and it is immediately 
 preceded by comment lines which may contain any C code, including function and variable 
 declarations and definitions. It is necessary to say that there must be no blank lines in 
@@ -610,11 +602,15 @@ libfoo wasn’t found by the Go linker.
 \begin{lstlisting} 
 go install foo 
 \end{lstlisting}
-We install package and all is prepared for using in Go. Package is called in Go code through 
-$import "foo"$.
+By installing the package everything is prepared for using in Go. Package is called in Go code 
+through $import "foo"$.
 
-In order to use cgo on Windows, we will also need to first install a gcc compiler and have 
-$gcc.exe$ in PATH environment variable before compiling with cgo will work.
+In order to use Cgo on Windows, it is firstly needed to install a gcc compiler and have 
+$gcc.exe$ in PATH environment variable before compiling with Cgo will work.
+
+\nocite{cgo-command}
+\nocite{bloggolangorg}
+\nocite{cgo-wiki}
 
 \begin{comment}
 
@@ -698,71 +694,87 @@ fnv & implements FNV-1 and FNV-1a, non-cryptographic hash functions created by G
 
 \end{comment}
 
-\chapter{Analysis}
-It was necessary to examine features of language GO related safety and cryptography, analyze 
-libraries which GO contains and also search for available third-party libraries. This chapter 
-contains the overview, evaluate and compare existing cryptographic liberates base on their 
-measures and next base on expansion measures important for implementation.
+\nocite{chisnall2012go}
+\nocite{balbaert_2012}
+\nocite{summerfield_2012}
+\nocite{harris_2015}
+\nocite{kozyra_2014}
 
-Table \ref{table:analysis} shows analyzed Go package Crypto created by Golang and other Go 
+\chapter{Go Packages Analysis}
+This chapter contains the overview, evaluate and compare existing cryptographic libraries based on 
+their measures and expansion measures important for implementation.
+
+\section{Cryptographic functions}
+It was necessary to examine features of language Go related to the safety and cryptography, analyze 
+libraries which Go contains and also search for available third-party libraries. 
+
+Table \ref{table:analysis} shows analyzed Go package Crypto created by \textit{Golang} and other Go 
 packages created by third-parties. Individually items mean:
 \vskip0.1in
 \begin{itemize}[leftmargin=2em,rightmargin=1em,itemsep=0.75\parskip,parsep=0em,topsep=0em,partopsep=0em]
-\item Name - name of founder and package.
+\item Name - founder nickname (almost all packages are searched on \textit{https://github.com/} where is not published real name of founder or contributors) and name of package.
 \item Cryptographic functions - support cryptographic functions, such as symmetric encryption, asymmetric encryption and hash functions (all/sym/asym/hash/unknown).
-\item Start of project - a year of creating project.
-\item Is still opened - contributors still work on the project (Yes/No).
+\item Start of project - a year of creating project with package.
+\item Is still opened - the important measure is if contributors still work on the project (Yes/No).
 \item Issue tracker system - support of solving bugs, feature requests, tracking todos, and more (Yes/No).
-\item Documentation accessibility - assessed on a scale of 0-5 (5 is the highest).
+\item Documentation accessibility - assessed on a scale of 0-5 points (5 is the highest) according to own experience to work with the package.
 \item Downloads - number of downloads. In case the package is saved on \textit{https://github.com/}, the information about downloads presents value of Fork. Downloads of package Crypto created by Golang is unknown, this package is automatically installed with installing program Go.  
 \item License - availability of licenses for free (Yes/Payment). The payment indicates the amount of payment per some period. This case did not occur.
 \end{itemize}
 \vskip0.1in
 
 \begin{center}
-\begin{longtable}[th]{|P{1.6cm}P{1cm}P{1cm}P{1cm}P{1.3cm}P{1.3cm}P{1.2cm}P{1.1cm}|}
+\begin{longtable}[th]{|P{1.6cm}|Q{1cm}P{1cm}Q{1cm}P{1.3cm}Q{1.3cm}P{1.2cm}Q{1.1cm}|}
 \caption{Table of cryptographic libraries in Go} \label{table:analysis} \\
 
-\hline Name & Crypto. functions & Start of project & Is still opened & Issue tracker system & Doc. accessability & Down-loads & License\\ \hline 
+\hline \hline
+%\rowcolor[HTML]{EFEDED}
+Name & Crypto. functions & Start of project & Is still opened & Issue tracker system & Doc. accessibility & Down-loads & License\\ [6ex]
+\hline \hline \hline \hline
 \endfirsthead
 
-\multicolumn{8}{c}%
+\multicolumn{8}{c}
 {{\tablename\ \thetable{} -- continued from previous page}} \\
-\hline Name & Crypto. functions & Start of project & Is still opened & Issue tracker system & Doc. accessability & Down-loads & License \\ \hline 
+\hline \hline
+%\rowcolor[HTML]{EFEDED}
+Name & Crypto. functions & Start of project & Is still opened & Issue tracker system & Doc. accessibility & Down-loads & License \\ [6ex]
+\hline \hline \hline \hline
 \endhead
 
-\hline \multicolumn{8}{|r|}{{Continued on next page}} \\ \hline
+\hline \hline
+\rowcolor[HTML]{E9E9E9} 
+\multicolumn{8}{|r|}{{Continued on next page}} \\ \hline
 \endfoot
 
-\hline \hline
+\hline 
 \endlastfoot
 
-golang/ crypto & all & 2009 & Y & Y & 5 & - & Y\\ 
+golang/ crypto & all & 2009 & Y & Y & 5 & - & Y\\ [3ex]
 %go-lang. cat-v.org/ pure-go-libs & N & \footnote{Page ceased updating in October, 2012} & & & & & Y \\ 
 %golang libs.com category cryptography & Y & not all & 2012-2016 & some & & & \\
 %golang libs.com category security & Y & not all & 2013-2016 & some & & & \\
-ory-am/ fosite & asym, hash & 2015 & Y & Y & 4 & 39 & Y \\
-square/ go-jose & asym, sym & 2014 & Y & Y & 4 & 70 & Y \\
-Shopify/ ejson & hash & 2014 & Y & Y & 3 & 22 & Y \\
-mitchellh/ go-mruby & asym & 2014 & Y & Y & 4 & 19 & Y \\
-Sermo Digital/ jose & all & 2015 & Y & Y & 4 & 28 & Y \\
-mozilla/ tls-observatory & hash & 2014 & Y & Y & 4 & 31 & Y \\
-square/ certigo & hash & 2016 & Y & Y & 3 & 12 & Y \\
-docker/ libtrust & all & 2014 & N & Y & 4 & 26 & Y \\
-dedis/ crypto & sym, hash & 2010 & Y & Y & 4 & 17 & Y \\
-dchest/ blake2b & hash & 2012 & N & Y & 4 & 6 & Y \\
-enceve/ crypto & hash & 2016 & N & Y & 4 & 1 & Y \\
-go-libp2p-crypto & all & 2015 & Y & Y & 4 & 5 & Y \\ 
-dchest/ blake2s & hash & 2012 & N & N & 3 & 3 & Y \\
-benburkert/ openpgp & sym, hash & 2012 & N & N & 3 & 0 & Y \\
-minio/ sha256-simd & hash & 2016 & Y & Y & 3 & 14 & Y \\
-avelino/ awesome-go & un-known & 2014 & Y & Y & 2 & 2287 & Y \\
-ethereum/ go-ethereum & all & 2013 & Y & Y & 4 & 1028 & Y \\
-chain/ chain & hash & 2015 & Y & Y & 4 & 113 & Y \\
-lightning network/lnd & sym, hash & 2015 & Y & Y & 4 & 50 & Y \\
-square/ go-jose & asym, hash & 2014 & Y & Y & 4 & 70 & Y \\
-dgrijalva/ jwt-go & asym, hash & 2012 & Y & Y & 4 & 226 & Y \\
-golang/ oauth2 & asym, hash & 2014 & Y & Y & 4 & 279 & Y  
+ory-am/ fosite & asym, hash & 2015 & Y & Y & 4 & 39 & Y \\ [4ex]
+square/ go-jose & asym, sym & 2014 & Y & Y & 4 & 70 & Y \\ [4ex]
+Shopify/ ejson & hash & 2014 & Y & Y & 3 & 22 & Y \\ [3ex]
+mitchellh/ go-mruby & asym & 2014 & Y & Y & 4 & 19 & Y \\ [4ex]
+Sermo Digital/ jose & all & 2015 & Y & Y & 4 & 28 & Y \\ [4ex]
+mozilla/ tls-observatory & hash & 2014 & Y & Y & 4 & 31 & Y \\ [4ex]
+square/ certigo & hash & 2016 & Y & Y & 3 & 12 & Y \\ [3ex]
+docker/ libtrust & all & 2014 & N & Y & 4 & 26 & Y \\ [3ex]
+dedis/ crypto & sym, hash & 2010 & Y & Y & 4 & 17 & Y \\ [3ex]
+dchest/ blake2b & hash & 2012 & N & Y & 4 & 6 & Y \\ [3ex]
+enceve/ crypto & hash & 2016 & N & Y & 4 & 1 & Y \\ [3ex]
+go-libp2p-crypto & all & 2015 & Y & Y & 4 & 5 & Y \\ [3ex]
+dchest/ blake2s & hash & 2012 & N & N & 3 & 3 & Y \\ [3ex]
+benburkert/ openpgp & sym, hash & 2012 & N & N & 3 & 0 & Y \\ [4ex]
+minio/ sha256-simd & hash & 2016 & Y & Y & 3 & 14 & Y \\ [4ex]
+avelino/ awesome-go & un-known & 2014 & Y & Y & 2 & 2287 & Y \\ [4ex]
+ethereum/ go-ethereum & all & 2013 & Y & Y & 4 & 1028 & Y \\ [4ex]
+chain/ chain & hash & 2015 & Y & Y & 4 & 113 & Y \\ [3ex]
+lightning network/lnd & sym, hash & 2015 & Y & Y & 4 & 50 & Y \\ [4ex]
+square/ go-jose & asym, hash & 2014 & Y & Y & 4 & 70 & Y \\ [3ex]
+dgrijalva/ jwt-go & asym, hash & 2012 & Y & Y & 4 & 226 & Y \\ [3ex]
+golang/ oauth2 & asym, hash & 2014 & Y & Y & 4 & 279 & Y \\ [3ex] 
 \end{longtable}
 \end{center}
 %%  Zdroje k tabulke:
@@ -773,22 +785,31 @@ golang/ oauth2 & asym, hash & 2014 & Y & Y & 4 & 279 & Y
 %%% https://golang.org/pkg/
 %%% ?
 
-The table \ref{table:analysis} was created on the base of information available on 
-following websites \cite{security-golibrariesAndApps} \cite{cryptography-golibrariesAndApps} \cite{crypto-godoc} \cite{packages-thegoprogramminglanguage}. The 
+The table \ref{table:analysis} was created based on information available on 
+following websites \cite{security-golibrariesAndApps} \cite{cryptography-golibrariesAndApps} 
+\cite{crypto-godoc} \cite{packages-thegoprogramminglanguage}. The 
 table does not contain packages which do not support any cryptographic functions. Also, 
 the table does not contain information from untrusted sources. During the analysis, I 
-discovered sources which are not actual or supported \cite{puregolibs}.
+discovered sources which are not actual or supported \cite{puregolibs}. 
 
-The next step of analysis was select the libraries which fulfill the requirements. The important 
+I searched immediately using keywords as names of functions or words in descriptions of functions. 
+I found a large amount of packages, but a few of them met the necessary requirements such as 
+support of symmetric and asymmetric algorithms or hash operations. 
+
+\section{Expansion measures}
+
+The next step of analysis was to select the packages which fulfill the requirements. The important 
 parameters were the support of all cryptographic functions, the topicality of project, the 
-approach to solving problems and no payment license. In the table \ref{table:analysis2}, 
-there are shown four libraries and compared to the base of the other measures:
+approach to solving problems and no payment license. In the table \ref{table:analysis23}, 
+there are shown four libraries which are compared to the base of the other measures:
 \vskip0.1in
 \begin{itemize}[leftmargin=2em,rightmargin=1em,itemsep=0.75\parskip,parsep=0em,topsep=0em,partopsep=0em]
-\item Crypto. key - possibilities for generation of cryptographic keys (Yes/No),
+\item Gen. crypto. key - possibilities for generation of cryptographic keys (Yes/No),
+\item Key size min. - if package could generate cryptographic key, it shows minimal key size in bytes (some packages do not provide this information),
+\item Key size max. - if package could generate cryptographic key, it shows maximal key size in bytes (some packages do not provide this information),
 \item X.509 Certificates - work with X.509 certificates (generation of self-signed certificates, support for certificate signing requests, support for different formats and extensions) (Yes/No),
 \item SSL/TLS - support of higher level protocols such as SSL/TLS (Yes/No),
-\item Use go lang crypto - dependence on Crypto package created by Golang (Yes/No/-).
+\item TLS\_PSK - support of create communication with server using pre-shared key (Yes/No).
 \end{itemize}
 \vskip0.1in
 
@@ -813,33 +834,359 @@ ethereum/go-ethereum & all & 2013 & Y & Y & 4 & 1028 & Y & Y & Y & N & Y \\ [3ex
 \end{comment}
 
 \begin{table}[th]
-\begin{tabular}{|P{2.3cm}|P{1.1cm} P{2.4cm} P{2.4cm} P{2.4cm}|}
-\hline
- & crypto & SermoDigital/ jose & go-libp2p-crypto & ethereum/go-ethereum \\ [2ex]
-%Name & Crypto. functions & Start of project & Is still opened & Issue tracker system & Doc. accessability & Down-loads & License & Crypto. keys & X.509 Certificates & SSL/ TLS & Use Golang Crypto
-\hline
-Crypto. functions & all & all & all & all \\ [4ex]
-Start of project & 2009 & 2015 & 2015 & 2013 \\ [4ex]
-Is still opened & Y & Y & Y & Y \\ [4ex]
-Issue tracker system & Y & Y & Y & Y \\ [4ex]
-Doc. accessability & 5 & 4 & 4 & 4 \\ [4ex]
+\caption{Filtered table of packages with expansion measures} 
+\begin{threeparttable}
+\begin{tabular}{|P{2.3cm}||P{1.1cm} P{2.4cm} P{2.4cm} P{2.4cm}|}
+\hline \hline
+\rowcolor[HTML]{FFF0F0}
+Package & crypto & jose & go-libp2p-crypto & go-ethereum \\ [2ex]
+\hline \hline
+Founder & Golang & SermoDigital & libp2p & ethereum \\ [2ex]
+\rowcolor{myColor}
+Crypto. functions & all & all & all & all \\ [3.3ex]
+Start of project & 2009 & 2015 & 2015 & 2013 \\ [3.3ex]
+\rowcolor{myColor}
+Is still opened & Y & Y & Y & Y \\ [3.3ex]
+Issue tracker system & Y & Y & Y & Y \\ [3.3ex]
+\rowcolor{myColor}
+Doc. accessability & 5 & 4 & 4 & 4 \\ [3.3ex]
 Downloads & - & 28 & 5 & 1028 \\ [2ex]
+\rowcolor{myColor}
 License & Y & Y & Y & Y \\ [2ex]
-Crypto. keys & Y & Y & Y & Y \\ [4ex]
-X.509 Certificates & Y & Y & Y & Y \\ [4ex]
-SSL/ TLS & Y & N & N & N \\ [2ex]
-Use Golang Crypto & - & Y & Y & Y \\ [4ex]
+Gen. crypto. keys & Y & N & Y & N \\ [3.3ex]
+\rowcolor{myColor}
+Key size min & 2 & - & unknown & - \\ [3.3ex]
+Key size max & 8192 & - & unknown & - \\ [3.3ex]
+\rowcolor{myColor}
+X.509 Certificates & Y & Y & Y & Y \\ [3.3ex]
+SSL/TLS & Y & N & N & N \\ [2ex]
+\rowcolor{myColor}
+TLS\_PSK \tnote{1} & N & N & N & N \\ [2ex]
 \hline
 \end{tabular}
-\caption{Filtered table of cryptographic libraries in Go with other measures} 
+\begin{tablenotes}
+\item[1] During analysis I found package \textit{Raff/tls-psk} using TLS\_PSK cipher suites, I describe it in subsection \ref{raff}.%; \item[2] asdfgh
+\end{tablenotes}
+\end{threeparttable}
 \label{table:analysis23} 
 \end{table}
 
-%Based on observed data I decided to use Crypto package created by Golang for implementation.
+\nocite{crypto}
+\nocite{jose}
+\nocite{libp2p}
+\nocite{ethereum}
 
-%\chapter{Implementation}
+Based on observed data I decided to use Crypto package created by \textit{Golang} for 
+implementation. 
+
+Crypto supports generation cryptographic keys and their size is 2 to 8192 bytes, as suggests table 
+1 in \cite{hinek2008security}. The other important requirement is propped up higher level 
+protocols such as SSL/TLS. Only the Crypto package contains subdirectory worked with TLS 
+connection to the server.
+
+\chapter{Implementation}
+The theoretical part of my Bachelor thesis was to implement console application to create keys and 
+certificates which are signed by intern certificate authority. In this chapter, I will explain the 
+assignment, the problems and the process of implementation. 
+
+\section{Assignment}
+For functionality, there are needed several parameters, such as:
+\begin{itemize}[leftmargin=2em,rightmargin=1em,itemsep=0.75\parskip,parsep=0em,topsep=0em,partopsep=0em]
+\item the address of the server with the certificate authority,
+\item the port connection to the server,
+\item the pre-shared key to connect to server,
+\item path to the key store,
+\item IP address of subsystem,
+\item the domain name of subsystem and 
+\item identity of a system for what the certificate is created.
+\end{itemize}
+\vskip 0.1in
+The application connects to the server with intern certificate authority through 
+TLS\_PSK, then it generates the asymmetric RSA key pair and the certification signing 
+request which is sent to the authority. Server sends signed certificate back and it is 
+along with private key saved to the designated key store.
+
+\section{TLS\_PSK}
+For application I decided to use packages created by Golang. There was a problem 
+because this package does not support TLS with pre-shared key. From the previous 
+research I know that there is one third-party library which is adapted to use TLS\_PSK 
+\cite{raff}. 
+
+\subsection{Raff}\label{raff}
+Raff/tls-psk library was created 3 years ago and it has not been 
+maintained yet. It does not have any downloads, issue tracker nor active contributors. 
+
+For application needed I decided to use this library. Connecting to OpenSSL server was 
+correct but connecting to server with CA was not possible because of unsupported cipher 
+suites. Raff/tls-psk library contains only 4 versions of cipher suites and the others 
+are not supported. 
+
+The other solution how to implement TLS\_PSK to Go is using Cgo. Cgo allows Go to 
+interoperate code written in C language. How Cgo works I describe in section \ref{cgo}. 
 
 
+\section{Language C in Go}\label{langCinGo}
+I created methods worked with OpenSSL in language C for initialization, connection, reading from 
+and writing to the server.
+
+\subsection{Initialization}
+Initialization consists of four methods from \textit{openssl/ssl.h} and \textit{openssl/err.h}. 
+Methods initialize \textit{s\_client}, add algorithms to the table and register the error strings, 
+the available SSL/TLS ciphers and digests.
+
+\subsection{Connection}\label{conn}
+Connection to the server is created through TLS\_PSK. Connection method creates a new SSL\_CTX 
+object as a framework to establish TLS/SSL enabled connections, next it creates a new BIO chain 
+consisting of an SSL BIO (using ctx) followed by a setting of address and pre-shared key. The 
+address consists of host name and port. The pre-shared key is set through 
+\textit{SSL\_set\_psk\_client\_callback} with SSL and a callback function as arguments. The 
+purpose of the callback function is to select the PSK identity and the pre-shared key to use 
+during the connection setup phase. The variable with the pre-shared key has to be global. The 
+setting is followed by a connect BIO.
+
+\subsection{Reading from and writing to server}
+Created method \textit{C\_bio\_read} reads 1 byte from BIO until the server sends the null 
+terminator $'\backslash0'$. Created method \textit{C\_bio\_write} writes bytes to BIO with the 
+null terminator $'\backslash0'$ at the end.
+
+\section{Using C-methods in Go}\label{c-method}
+Methods written in C language have to be called in Go code with prefix '\textit{C.}' and have the 
+correct types of arguments. 
+
+C does not have an explicit string type and strings are represented by 
+a zero-terminated array of chars. Conversion between Go and C strings is done with the 
+\textit{C.CString}, \textit{C.GoString}, and \textit{C.GoStringN} functions. These conversions 
+make a copy of the string data \cite{bloggolangorg}. 
+
+\begin{lstlisting}
+// Go string to C string
+func C.CString(string) *C.char
+
+// C string to Go string
+func C.GoString(*C.char) string
+
+// C data with explicit length to Go string
+func C.GoStringN(*C.char, C.int) string
+\end{lstlisting}
+
+As I wrote in the subsection \ref{conn}, the pre-shared key has to be the global variable in C 
+code. To set it from Go code where application takes the pre-shared key as an argument, I used 
+followed commands.
+\begin{lstlisting}
+//in C
+char *psk_key;
+
+//in Go
+arg := os.Args
+private_key := arg[3]
+
+C.psk_key = C.CString(private_key)
+\end{lstlisting}
+
+\section{Communication protocol}
+Communication between the Pairing Client and Server with Certificate Authority (CA Server) is based on null-terminated strings. The protocol looks as follows:
+
+\subsection{Connection using TLS\_PSK}
+\begin{itemize}[leftmargin=2em,rightmargin=1em,itemsep=0.75\parskip,parsep=0em,topsep=0em,partopsep=0em]
+\item Pairing client connects to the CA Server using given pairing key and default identity.
+\item CA Server validates Pairing Client (the identity is ignored).
+\end{itemize}
+
+The connection is provided through Go method \textit{create\_connection} with arguments port, the 
+address of the server and pre-shared key. The pre-shared key is set as a global variable in C code 
+(described in section \ref{c-method}) and subsequently is called C method to create the connection. 
+
+Client and server exchanged \textit{ClientHello - ServerHello}, and \textit{ClientKeyExchange - 
+ServerKeyExchange}. They agreed to use common cipher suite. 
+
+\subsection{Protocol version exchange}
+\begin{itemize}[leftmargin=2em,rightmargin=1em,itemsep=0.75\parskip,parsep=0em,topsep=0em,partopsep=0em]
+\item Pairing Client sends supported protocol version.
+\item CA Server chooses the highest protocol version possible and sends it back.
+\end{itemize}
+
+Currently, is used protocol version only 1. Go method \textit{protocol\_version\_exchange} calls 
+write and read methods from C code.
+
+\begin{lstlisting}
+protocol_version := C.CString("1")
+err_write := C.C_bio_write(bio, protocol_version, 1)
+server_protocol_version := C.C_bio_read(bio)
+if *server_protocol_version != *protocol_version {
+	return -1
+} 
+\end{lstlisting}
+
+
+\subsection{Key length}
+\begin{itemize}[leftmargin=2em,rightmargin=1em,itemsep=0.75\parskip,parsep=0em,topsep=0em,partopsep=0em]
+\item Pairing Client sends the component/subsystem identification.
+\item Pairing Client sends information if the key/certificate belongs to the CA or it is end certificate (CA or END).
+\item CA Server returns key length for the key generation.
+\end{itemize}
+    
+There are used C methods for write and read. The subsystem identification (UA) is written to the server together with CA or END information from argument of application. Subsequently, the method reads \textit{key\_length} from server and uses standard library functions to convert string to the number from package \textit{"strconv"} and generates the key from package \textit{"crypto/rsa"}.
+
+\begin{lstlisting}
+key_len, err := strconv.Atoi(C.GoString(key_length))	
+checkErr(err)
+
+var key interface{}
+key, err = rsa.GenerateKey(rand.Reader, key_len)
+\end{lstlisting}
+    
+\subsection{Certificate signing}
+\begin{itemize}[leftmargin=2em,rightmargin=1em,itemsep=0.75\parskip,parsep=0em,topsep=0em,partopsep=0em]
+\item Pairing Client sends generated PEM encoded a certificate request (with domain name in Common Name field).
+\item Pairing Client sends IP address of the component/subsystem server.
+\item CA Server responses with the signed certificate (PEM encoded).
+\end{itemize}
+
+The application creates the template (tmp) based on observed IP address and domain\_name from 
+arguments. The template (tmp) is used during creating a new certificate request (CSR). 
+
+\begin{lstlisting}
+tmp := &x509.CertificateRequest {
+	Subject 		: pkix.Name{CommonName : ip},
+	DNSNames 		: []string{domain_name},
+	IPAddresses : []net.IP{net.ParseIP(ip)},
+}
+csr,err:=x509.CreateCertificateRequest(rand.Reader,tmp,key)
+\end{lstlisting}
+
+The template and function \textit{CreateCertificateRequest} are from package 
+\textit{"crypto/x509"}. The function returns bytes array, so to sending the request to the server, 
+it has to be converted to pem string. The request has to be saved in temp file as follows:
+\begin{lstlisting}
+pem.Encode(csr_file, &pem.Block{Type: "CERTIFICATE REQUEST", Bytes: csr})
+\end{lstlisting}
+and subsequently, it is read as a string and sent to the server. When the file with request is not 
+needed, it is deleted through:
+\begin{lstlisting}
+os.Remove("csr.pem")
+\end{lstlisting}
+The server answers with signed certificate chain. Signed certificate is saved to file and with 
+generated key are saved to the key store.
+
+\subsection{Achieving trust}
+The connection ends when the server sends trust anchor as a CA certificate. After that, it is not 
+possible to write to or read from the server. Correctness of achieving trust is checked up 
+through:
+\begin{lstlisting}
+strings.HasPrefix(str, "-----BEGIN")
+\end{lstlisting}
+
+\section{Compilation and run}
+To run application, it is needed to install a several programs.
+\begin{enumerate}
+\item Go - see how to start with Go in section \ref{howToStart}
+\item GCC - the application use Cgo which needs C compiler
+\item OpenSSL - is used in C code
+\item libssl-dev - (or openssl-devel) contains compiled dynamic libraries \textit{libssl} and \textit{libcrypto} important for linker options (part of LDFLAGS). 
+\begin{enumerate}
+  \item \textit{libssl} provides the client and server-side implementations for SSLv3 and TLS.
+  \item \textit{libcrypto} provides general cryptographic and X.509 support needed by SSL/TLS \cite{opensslgit}.
+\end{enumerate}
+\end{enumerate}
+
+Application is built and run through:
+\begin{lstlisting}
+go build <name>.go
+./<name> <server> <port> <PSK> <pathToKeyStore> <subjectIP> <subjectDomainName> <subjectID>
+\end{lstlisting}
+
+For example:
+\begin{lstlisting}
+go build app.go
+./app localhost 10443 aaaa /tmp 192.0.2.0 example.com END
+\end{lstlisting}
+
+\nocite{linux-man}
+\nocite{foundation}
+
+\chapter{Evaluation}
+
+In this chapter, I will evaluate process of working on this thesis. I will describe the workflow, the problems, ..........
+
+\section{Select Libraries}
+Before analyzing libraries, I had to learn Go language, install it and try to programming. All important information about this language and working with it is described in the chapter \ref{go}. 
+
+The Internet provides a big amount of Go packages created by third parties. To the thesis, I selected more than one hundred packages working with cryptographic functions and hash operations. It was necessary to remove packages from untrusted and unsupported sources. The correct packages in table \ref{table:analysis} are compared based on their actuality (topicality), the approach to solving problems, documentation accessibility, number of downloads and no payment license. The table \ref{table:analysis23} contains 4 libraries selected from table \ref{table:analysis}. 
+
+The analysis shows, (do dnesneho datumu) the package suitable all the requirements does not exist. The generation of cryptographic keys (within 2 to 8192 bytes) and support of TLS protocol at the same time is only in package Crypto from \textit{Golang}. It is the main reason why I chose it to use in the implementation. 
+
+During the analysis I found package \textit{Raff/tls-psk} using TLS\_PSK cipher suites, but the package has not been supporting for 3 years, so it was not possible to use this package in the implementation. 
+
+The problem with TLS\_PSK solves using \textit{OpenSSL}.
+
+\section{OpenSSL and Language C}
+
+\textit{OpenSSL} contains an open-source implementation of the SSL and TLS protocols. The libraries, written in the C programming language, implements basic cryptographic functions and provides various utility functions \cite{foundation}. 
+
+In the implementation was needed to create methods working with \textit{OpenSSL} in langauge C. The methods are described in section \ref{langCinGo} and called from Go code using Cgo (explained in section \ref{cgo}). .........
+
+During the implementation did not rise any other problem.
+
+\section{Testing}
+
+The necessary step of implementation is testing multiple parts of application and all of the 
+system acting together. I test whether each component fulfills its contract, but also whether they 
+are composed and configured correctly and interact as expected. 
+
+\subsection{Connectivity test}
+
+Connectivity test checks behavior of application for the wrong server, port or key. For the wrong 
+server or port, the application returns \textit{BIO\_do\_connect:} -1 what means the connection 
+failed. For the wrong key, the application writes checking identity and key, 
+\textit{BIO\_do\_connect:} -1 what means the connection failed for the wrong key.
+
+\subsection{Step by step testing of communication}
+I created tests for checking communication in certain moments. Each test has to contain connection 
+and the previous steps of communication to correct test of given step.
+
+For example test of version exchange contains the correct connection to the server.
+\begin{lstlisting}
+func Test_version_exchange_OK(t *testing.T) {
+	t.Log("Testing protocol version exchange... ")
+		
+	bio := create_connection("localhost", "10443", "aaaa")
+	if bio == nil {
+		t.Errorf("Error while connecting to server")
+	}
+	
+	if ret := protocol_version_exchange(bio); ret == -1 {
+		t.Errorf("Error: different version")
+	} else if ret == -2 {
+		t.Errorf("Error: problem with connection")
+	} 
+	t.Log("Test OK")
+}
+\end{lstlisting}
+
+Tests of generation certificate request and private key also contain generation with the correct 
+and wrong connection, arguments and key size.
+
+\subsection{File test}
+These tests check saving certificates and keys without connection and previous communication with 
+the server to the key store with the existing or non-existing path, correct key or empty interface. 
+
+\section{Cross-compiler and Integration}
+
+
+
+
+\chapter{Conclusion}
+This Bachelor thesis deals with cryptographic tools of Go programming language. Its goal was to evaluate cryptographic libraries and implement the prototype of a client application. The thesis was consulted and developed in cooperation with Y Soft Corporation, a.s.
+
+The Go libraries were overviewed and compared based on their support of symmetric and asymmetric cryptographic algorithms and hash operations. In pursuance of analysis, the four libraries were selected and subsequently examined according to methods for generation of cryptographic keys and self-signed certificates, support for certificate signing requests, different formats, and SSL/TLS.  From the report, one library was selected to the implementation.
+
+The prototype of a client application is able to generate asymmetric keys and certificate signing requests, connect to a server application using TLS\_PSK cipher suite and communicate with the server. The application is prepared to integrate to the company system.
+
+The Bachelor thesis had a great personal benefit for me. I expanded my knowledge of Go programming language, OpenSSL, and the certificates. I also gain a great asset in designing and developing the application and I improved my programming skills in the languages C and Go. 
+
+....
+
+....
 
 \printbibliography
 
