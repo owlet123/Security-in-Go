@@ -126,11 +126,9 @@
 
 \chapter{Basic Terms}
 In this chapter, I will define the basic terms which are necessary to an understanding of the 
-text presented in the following chapters. First %I will explain the symmetric and asymmetric cryptography and hash functions. 
-I will describe the structure of certificates, standard X.509, certificate authority and 
-signing process. I will explain self-signed certificate, PEM and DER formats, and the process 
-of certificate exchange. Finally, I will describe protocols SSL/TLS and TLS\_PSK used in the 
-application.
+text presented in the following chapters. First I will describe the structure of certificates, 
+standard X.509, certificate authority and signing process. I will explain self-signed certificate and formats. Finally, I will describe protocols SSL/TLS and TLS pre-shared key (TLS\_PSK) 
+algorithm used in the application.
 
 \begin{comment}
 
@@ -244,14 +242,14 @@ the expansion. It eliminates the major shortcomings of the two previous versions
 \end{figure}
 
 \subsection{Certificate Authority}
-The Certification Authority (CA) is an independent third party that issues certificates.
+The Certification Authority (CA) is an independent third party which issues certificates.
 
 In other words, the CA is an institution that inspects the certificate request and issues whose 
-validity is verifiable using the responsive public key. The CA was created in 1998 in order to 
-ensure secure encryption through a certified public key and guarantee the validity of the digital 
-signature. The CA also ensures their validity revocation. The CA is truly credible, must be 
-impartial and, if it is possible, should be subordinate to any higher CA. Subordination means that 
-it identifies using certificates signed by the higher certificate authority 
+validity is verifiable using the responsive public key. The CA was created %(in 1998 in order) 
+to ensure secure encryption through a certified public key and guarantee the validity of the 
+digital signature. The CA also ensures their validity revocation. The CA is truly credible, must 
+be impartial and, if it is possible, should be subordinate to any higher CA. Subordination means 
+that it identifies using certificates signed by the higher certificate authority 
 \cite{dostalek2016velky}.
 
 Root CA, certification authorities at the highest level, uses the certificate signed by 
@@ -1005,8 +1003,8 @@ ServerKeyExchange}. They agreed to use common cipher suite.
 \item CA Server chooses the highest protocol version possible and sends it back.
 \end{itemize}
 
-Currently, is used protocol version only 1. Go method \textit{protocol\_version\_exchange} calls 
-write and read methods from C code.
+Currently, is used protocol version only 1. Go method calls writing and reading methods from C 
+code.
 
 \begin{lstlisting}
 protocol_version := C.CString("1")
@@ -1106,24 +1104,41 @@ go build app.go
 
 \chapter{Evaluation}
 
-In this chapter, I will evaluate process of working on this thesis. I will describe the workflow, the problems, ..........
+In this chapter, I will evaluate process of working on this thesis. I will describe the workflow, 
+the problems and way how to integrate the application in the company system.
 
 \section{Select Libraries}
-Before analyzing libraries, I had to learn Go language, install it and try to programming. All important information about this language and working with it is described in the chapter \ref{go}. 
+Before analyzing libraries, I had to learn Go language, install it and try to programming. All 
+important information about this language and working with it is described in the chapter 
+\ref{go}. 
 
-The Internet provides a big amount of Go packages created by third parties. To the thesis, I selected more than one hundred packages working with cryptographic functions and hash operations. It was necessary to remove packages from untrusted and unsupported sources. The correct packages in table \ref{table:analysis} are compared based on their actuality (topicality), the approach to solving problems, documentation accessibility, number of downloads and no payment license. The table \ref{table:analysis23} contains 4 libraries selected from table \ref{table:analysis}. 
+The Internet provides a big amount of Go packages created by third parties. To the thesis, I 
+selected more than one hundred packages working with cryptographic functions and hash operations. 
+It was necessary to remove packages from untrusted and unsupported sources. The correct packages 
+in table \ref{table:analysis} are compared based on their actuality (topicality), the approach to 
+solving problems, documentation accessibility, number of downloads and no payment license. The 
+table \ref{table:analysis23} contains 4 libraries selected from table \ref{table:analysis}. 
 
-The analysis shows, (do dnesneho datumu) the package suitable all the requirements does not exist. The generation of cryptographic keys (within 2 to 8192 bytes) and support of TLS protocol at the same time is only in package Crypto from \textit{Golang}. It is the main reason why I chose it to use in the implementation. 
+The analysis shows, (do dnesneho datumu) the package suitable all the requirements does not exist. 
+The generation of cryptographic keys (within 2 to 8192 bytes) and support of TLS protocol at the 
+same time is only in package Crypto from \textit{Golang}. It is the main reason why I chose it to 
+use in the implementation. 
 
-During the analysis I found package \textit{Raff/tls-psk} using TLS\_PSK cipher suites, but the package has not been supporting for 3 years, so it was not possible to use this package in the implementation. 
+During the analysis I found package \textit{Raff/tls-psk} using TLS\_PSK cipher suites, but the 
+package has not been supporting for 3 years, so it was not possible to use this package in the 
+implementation. 
 
 The problem with TLS\_PSK solves using \textit{OpenSSL}.
 
 \section{OpenSSL and Language C}
 
-\textit{OpenSSL} contains an open-source implementation of the SSL and TLS protocols. The libraries, written in the C programming language, implements basic cryptographic functions and provides various utility functions \cite{foundation}. 
+\textit{OpenSSL} contains an open-source implementation of the SSL and TLS protocols. The 
+libraries, written in the C programming language, implements basic cryptographic functions and 
+provides various utility functions \cite{foundation}. 
 
-In the implementation was needed to create methods working with \textit{OpenSSL} in langauge C. The methods are described in section \ref{langCinGo} and called from Go code using Cgo (explained in section \ref{cgo}). .........
+In the implementation was needed to create methods working with \textit{OpenSSL} in langauge C. 
+The methods are described in section \ref{langCinGo} and called from Go code using Cgo (explained 
+in section \ref{cgo}). .........
 
 During the implementation did not rise any other problem.
 
@@ -1168,7 +1183,8 @@ and wrong connection, arguments and key size.
 
 \subsection{File test}
 These tests check saving certificates and keys without connection and previous communication with 
-the server to the key store with the existing or non-existing path, correct key or empty interface. 
+the server to the key store with the existing or non-existing path, correct key or empty 
+interface. 
 
 \section{Cross-compiler and Integration}
 
@@ -1176,13 +1192,23 @@ the server to the key store with the existing or non-existing path, correct key 
 
 
 \chapter{Conclusion}
-This Bachelor thesis deals with cryptographic tools of Go programming language. Its goal was to evaluate cryptographic libraries and implement the prototype of a client application. The thesis was consulted and developed in cooperation with Y Soft Corporation, a.s.
+This Bachelor thesis deals with cryptographic tools of Go programming language. Its goal was to 
+evaluate cryptographic libraries and implement the prototype of a client application. The thesis 
+was consulted and developed in cooperation with Y Soft Corporation, a.s.
 
-The Go libraries were overviewed and compared based on their support of symmetric and asymmetric cryptographic algorithms and hash operations. In pursuance of analysis, the four libraries were selected and subsequently examined according to methods for generation of cryptographic keys and self-signed certificates, support for certificate signing requests, different formats, and SSL/TLS.  From the report, one library was selected to the implementation.
+The Go libraries were overviewed and compared based on their support of symmetric and asymmetric 
+cryptographic algorithms and hash operations. In pursuance of analysis, the four libraries were 
+selected and subsequently examined according to methods for generation of cryptographic keys and 
+self-signed certificates, support for certificate signing requests, different formats, and 
+SSL/TLS.  From the report, one library was selected to the implementation.
 
-The prototype of a client application is able to generate asymmetric keys and certificate signing requests, connect to a server application using TLS\_PSK cipher suite and communicate with the server. The application is prepared to integrate to the company system.
+The prototype of a client application is able to generate asymmetric keys and certificate signing 
+requests, connect to a server application using TLS\_PSK cipher suite and communicate with the 
+server. The application is prepared to integrate to the company system.
 
-The Bachelor thesis had a great personal benefit for me. I expanded my knowledge of Go programming language, OpenSSL, and the certificates. I also gain a great asset in designing and developing the application and I improved my programming skills in the languages C and Go. 
+The Bachelor thesis had a great personal benefit for me. I expanded my knowledge of Go programming 
+language, OpenSSL, and the certificates. I also gain a great asset in designing and developing the 
+application and I improved my programming skills in the languages C and Go. 
 
 ....
 
