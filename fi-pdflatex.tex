@@ -196,7 +196,7 @@ ITEMIZE
 \end{comment}
 
 \section{Certificate}
-Certificate is digitally signed data structure whose foundation includes a public key of
+Certificate is digitally signed data structure whose basis includes a public key of
 certificate owner. There are some standards of the certificate structure (X.509, EDI, WAP, 
 etc.). The Internet is based on standard X.509 version 3, which was issued by the ITU \cite{dostalek2016velky}. %For the needs of the Internet, there is created an Internet profile of X.509 in the relevant RFC. Current Internet profile certificate is standard RFC-5280 \cite{dostalek2016velky}.
 
@@ -333,8 +333,7 @@ The third version was introduced in 1996 and its specification could be found in
 \textit{The SSL Protocol Version 3.0} \cite{freier2011secure}. From this version was created TLS 
 protocol which is currently the most widespread and supported \cite{oppliger2003security}. 
 There are currently three versions which have only minimal differences. TLS version 1.3 is a draft 
-already used in multiple locations \cite{draft-tls}. The forthcoming \textit{OpenSSL 1.1.1} release 
-will include support for \textit{TLSv1.3} \cite{foundation2}.
+already used in multiple locations \cite{draft-tls}. For example, the forthcoming \textit{OpenSSL 1.1.1} release will include support for \textit{TLSv1.3} \cite{foundation2}.
 
 Protocol SSL/TLS provides authentication of the two communicating parties by using asymmetric 
 encryption, message integrity by using MAC and confidentiality by encrypting all 
@@ -464,9 +463,16 @@ go version
 Upgrading from an older version of Go must be precessed by removing the existing version. 
 
 \subsection{Enviroment}
-The Go toolset uses an environment variable called GOPATH to find Go source code. 
+After installation, it is necessary to set Go to the \textit{\$PATH} environment variable and set the \textit{\$GOROOT} environment variable to point to the directory in which it was installed. The Go toolset uses an environment variable called \textit{\$GOPATH} to find Go source code. 
 
-Set up your workplace, for example GOPATH=C:$\backslash$Projects$\backslash$Go$\backslash$.
+For example, if you installed Go to your home directory you should add commands like the following to \textit{\$HOME/.profile}:
+%Set up your workplace, for example \textit{GOPATH=C:/Projects/Go}.
+\begin{lstlisting}
+export GOROOT=$HOME/go1.X
+export PATH=$PATH:$GOROOT/bin
+export GOPATH=$HOME/Projects/go
+\end{lstlisting}
+\textit{\$GOPATH} has to contain directories \textit{src} and \textit{pkg}.
 
 \begin{comment}
 \subsection{First Program}
@@ -485,28 +491,41 @@ func main() {
 Make sure the file is identical to what is shown here and save it.
 \end{comment}
 
-\subsection{Compilation}
+\subsection{Compilation and Arguments}
 Go is a compiled language, and like many languages, it makes heavy use of the command
-line. Open up a new terminal, set up directory where you saved the file $hello.go$ and type in 
-the following:
+line. Open up a new terminal, set up directory where you saved your file and type in the following for run the file:
 \begin{lstlisting}
-go run hello.go
+go run <file-name>.go
 \end{lstlisting}
-You should see Hello World! displayed in your terminal.
-
-\subsection{Arguments}
-Command-line arguments are a common way to parameterize execution of programs. First must be used go build command to create a binary program.
+or type in the following to parameterize execution of programs. First must be used go build command to create a binary program.
 \begin{lstlisting}
-go build cmd-arguments.go
-./cmd-arguments a b c
+go build <file-name>.go
+./<file-name> <arguments>
 \end{lstlisting}
-In code, $os.Args$ provides access to raw command-line arguments. The first value is the path to the program, and os.Args[1:] holds the arguments to the program.
+In code, $os.Args$ provides access to raw command-line arguments. The first value is the path to the program, and \textit{os.Args[1:]} holds the arguments to the program.
 \begin{lstlisting}
 argsWithProg := os.Args
 argsWithoutProg := os.Args[1:]
 arg := os.Args[3]
 \end{lstlisting}
 Do not forget to import package $os$.
+%You should see Hello World! displayed in your terminal.
+
+\begin{comment}
+\subsection{Arguments}
+Command-line arguments are a common way to parameterize execution of programs. First must be used go build command to create a binary program.
+\begin{lstlisting}
+go build cmd-arguments.go
+./cmd-arguments a b c
+\end{lstlisting}
+In code, $os.Args$ provides access to raw command-line arguments. The first value is the path to the program, and \textit{os.Args[1:]} holds the arguments to the program.
+\begin{lstlisting}
+argsWithProg := os.Args
+argsWithoutProg := os.Args[1:]
+arg := os.Args[3]
+\end{lstlisting}
+Do not forget to import package $os$.
+\end{comment}
 
 \section{Packages}
 In Go, source files are organized into system directories called packages. To  develop 
@@ -515,14 +534,14 @@ provides the modularity and code reusability through its package system. Go enco
 programmers to write small pieces of software components through packages, and compose their  
 applications with these small packages.
 
-The packages from the standard library are available at the “pkg” subdirectory of the GOROOT 
-directory. When we install Go, an environment variable GOROOT will be automatically added to 
+The packages from the standard library are available at the $pkg$ subdirectory of the $\$GOROOT$ 
+directory. When we install Go, an environment variable $\$GOROOT$ will be automatically added to 
 our system for specifying the Go installer directory. The Go developer community is very 
 enthusiastic for developing third-party Go packages. When you develop Go applications, you can 
 affect these third-party Go packages \cite{stack_2014}.
 
-When programmers develop executable programs, they will use the package “main” for making the 
-package as an executable program. The package “main” tells the Go compiler that the package 
+When programmers develop executable programs, they will use the package $main$ for making the 
+package as an executable program. The package $main$ tells the Go compiler that the package 
 should compile as an executable program instead of a shared library. When programmers build 
 shared libraries, they will not have any main package and main function in the package.
 
@@ -546,8 +565,8 @@ Third-party Go packages are installed by using this command:
 \begin{lstlisting}
 go install
 \end{lstlisting}
-The go install command will build the package “sub” which will be available at the pkg 
-subdirectory of GOPATH.
+The go install command will build the package “sub” which will be available at the $pkg$ 
+subdirectory of $\$GOPATH$.
 \begin{lstlisting}
 package main
 import (
@@ -598,7 +617,7 @@ By installing the package everything is prepared for using in Go. Package is cal
 through $import "foo"$.
 
 In order to use Cgo on Windows, it is firstly needed to install a gcc compiler and have 
-$gcc.exe$ in PATH environment variable before compiling with Cgo will work.
+$gcc.exe$ in $\$PATH$ environment variable before compiling with Cgo will work.
 
 \nocite{cgo-command}
 \nocite{bloggolangorg}
@@ -811,6 +830,9 @@ For application needed I decided to try this library. Connecting to \textit{Open
 correct but connecting to server with CA was not possible because of unsupported cipher 
 suites. \textit{Raff/tls-psk} library contains only 4 versions of cipher suites and the others 
 are not supported. 
+
+To solving the issue, one of the supported cipher suites was added to the test server. It turned 
+out that package \textit{Raff/tls-psk} has also any other issues whose I have not examined yet.
 
 The other solution how to implement TLS\_PSK to Go is using Cgo. Cgo allows Go to 
 interoperate code written in C language. How Cgo works I describe in section \ref{cgo}. 
