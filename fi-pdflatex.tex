@@ -7,7 +7,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \documentclass[
-  digital, %% This option enables the default options for the
+  twoside, 12pt, 
+  printed, %digital, %% This option enables the default options for the
            %% digital version of a document. Replace with `printed`
            %% to enable the default options for the printed version
            %% of a document.
@@ -22,7 +23,7 @@
 ]{fithesis3}
 %% The following section sets up the locales used in the thesis.
 \usepackage[resetfonts]{cmap} %% We need to load the T2A font encoding
-\usepackage[T1,T2A]{fontenc}  %% to use the Cyrillic fonts with Russian texts.
+%\usepackage[T1,T2A]{fontenc}  %% to use the Cyrillic fonts with Russian texts.
 \usepackage[
   main=english, %% By using `czech` or `slovak` as the main locale
                 %% instead of `english`, you can typeset the thesis
@@ -51,19 +52,30 @@
     advisor       = {RNDr. Andriy Stetsko, Ph.D.},
     title         = {Security and cryptography in GO},
     TeXtitle      = {Security and cryptography in GO},
-    keywords      = {keyword1, keyword2, ...},
-    TeXkeywords   = {keyword1, keyword2, \ldots},
+    keywords      = {Security, Certificate, TLS, TLS\_PSK, Pre-shared key, Language Go, Language C, Cgo, OpenSSL},
+    TeXkeywords   = {Security, Certificate, TLS, TLS\_PSK, Pre-shared key, Language Go, Language C, Cgo, OpenSSL},
     bib           = example.bib,
 }
 \thesislong{abstract}{
-    This is the abstract of my thesis, which can
+The aims of the thesis are twofold. 
 
-    span multiple paragraphs.
+First, the thesis overviews and compares cryptographic libraries available for Go programming 
+language. The comparison covers supported cryptographic algorithms, key sizes, hash operations, 
+methods for generation of cryptographic keys, methods for work with X.509 certificates and higher 
+level protocols such as SSL/TLS. 
+
+Second, the thesis contains the implementation, tests and evaluation of a prototype of a client 
+application able to generate asymmetric keys and certificate signing requests, connect to a server 
+application using TLS\_PSK (pre-shared key) cipher suite. 
 }
 \thesislong{thanks}{
-    This is the acknowledgement for my thesis, which can
+I would like to thank RNDr. Andriy Stetsko, Ph.D. for the management of the Bachelor thesis, 
+valuable advice, and comments. I would also like to thank the consultant from Y Soft Corporation 
+a.s., Mgr. Lenka Bačinská, for useful advice, dedicated time and patience in consultations and 
+application development. 
 
-    span multiple paragraphs.
+Likewise, I thank my family and friends for their support throughout my studies and writing this 
+thesis.
 }
 \usepackage{makeidx}      %% The `makeidx` package contains
 \makeindex                %% helper commands for index typesetting.
@@ -82,7 +94,6 @@
 \usepackage[table]{xcolor}
 \usepackage{array}
 \newcolumntype{P}[1]{>{\centering\arraybackslash\columncolor[HTML]{F2F2F2}}m{#1}} %grey{E9E9E9}
-%\newcolumntype{Q}[1]{>{\centering\arraybackslash\columncolor[HTML]{FFF0F0}}m{#1}} %pink
 \newcolumntype{Q}[1]{>{\centering\arraybackslash}m{#1}}
 %\definecolor{myColor}{RGB}{255,240,240} %pink
 \definecolor{myColor2}{rgb}{0.95,0.95,0.92}%{RGB}{233,233,233} %grey
@@ -120,10 +131,27 @@
 
 \usepackage{verbatim} %comment
 
-
 \begin{document}
 \chapter{Introduction}
+One of the oldest systems of symmetric cryptography is probably “Skytale” used in 5th century BC. 
+The secret was made by the stick with some diameter which was reeled leather stripe on so that 
+covered surface of the stick. Then the message was written there. After the untangled message was
+unreadable. Cryptography informs as we know nowadays, it began to develop at the beginning of 20th 
+century especially with development telegraphs. Using cryptography happened necessary part of 
+ordinary life. All connections through we communicate are secured by some case through 
+cryptographic functions. An only little mistake in those functions can cause to misuse private 
+data. 
+    
+Programming language Go belongs to languages which the main idea is provided the best tools for programmers work even though it is not always the easiest or the most effective way. Language Go was made by Google Inc. company in 2007, and it has syntax derived from language C. Safety, speed 
+and concurrency are his main characters. Go provides extensive options for cryptography such as ciphering, hashing and work with certificates. 
 
+The aims of the thesis are twofold. First, it is necessary to examine features of language Go related safety and cryptography, analyze libraries which Go contains and also search for available third-party libraries. The thesis contains the overview, evaluate and compare existing cryptographic liberates based on their license, usability, supported cryptographic functions, such as symmetric and asymmetric encryption and hash functions. Next based on possibilities for the generation of cryptographic keys, work with X.509, such as generation of self-signed certificates, support for certificate signing requests and support for different formats and extensions.  It also compares support of higher level protocols such as SSL/TLS.    
+
+Second, Bachelor thesis contains the implementation in language Go, tests and evaluation of a prototype of a client application able to generate asymmetric keys and certificate signing requests and connect to a server application using TLS\_PSK.
+
+The thesis is consulted and realized in collaboration with Y Soft Corporation, a.s.
+
+...1
 
 \chapter{Basic Terms}
 In this chapter, I will define the basic terms which are necessary to an understanding of the 
@@ -190,8 +218,6 @@ collision.
 Likewise, it should be computationally very difficult to find for a hash value corresponding 
 to the input string. Using hash functions are used frequently to check the integrity of data 
 and for digital signing of data \cite{piper2006kryptografie}.
-
-ITEMIZE
 
 \end{comment}
 
@@ -413,7 +439,7 @@ applications, usually involving only a very small number of clients and servers.
 \begin{figure}[th]
 	\centering
   	\includegraphics[width=1.05\textwidth]{psk-edited}%{tls13-hs-resumption}%{psk}
-   \caption{TLS\_PSK Key Exchange}
+   \caption{TLS\_PSK Key Exchange, edited from \cite{taubert}}
 \end{figure}
 
 If the server does not recognize the PSK identity, it may respond with an 
@@ -653,13 +679,15 @@ packages created by third-parties. Individually items mean:
 \vskip0.1in
 
 \begin{center}
-\begin{longtable}[th]{|P{1.6cm}|Q{1cm}P{1cm}Q{1cm}P{1.3cm}Q{1.3cm}P{1.2cm}Q{1.1cm}|}
+\begin{longtable}[th]
+{|P{1.6cm}|Q{1cm}P{1cm}Q{1cm}P{1.3cm}Q{1.3cm}P{1.2cm}Q{1.1cm}|}
+\arrayrulecolor{orange}
 \caption{Table of cryptographic libraries in Go} \label{table:analysis} \\
 
 \hline \hline
 %\rowcolor[HTML]{EFEDED}
 Name & Crypto. functions & Start of project & Is still opened & Issue tracker system & Doc. accessibility & Down-loads & License\\ [6ex]
-\hline \hline \hline \hline
+\hline \hline 
 \endfirsthead
 
 \multicolumn{8}{c}
@@ -667,7 +695,7 @@ Name & Crypto. functions & Start of project & Is still opened & Issue tracker sy
 \hline \hline
 %\rowcolor[HTML]{EFEDED}
 Name & Crypto. functions & Start of project & Is still opened & Issue tracker system & Doc. accessibility & Down-loads & License \\ [6ex]
-\hline \hline \hline \hline
+\hline \hline 
 \endhead
 
 \hline \hline
@@ -677,7 +705,6 @@ Name & Crypto. functions & Start of project & Is still opened & Issue tracker sy
 
 \hline 
 \endlastfoot
-
 golang/ crypto & all & 2009 & Y & Y & 5 & - & Y\\ [3ex]
 %go-lang. cat-v.org/ pure-go-libs & N & \footnote{Page ceased updating in October, 2012} & & & & & Y \\ 
 %golang libs.com category cryptography & Y & not all & 2012-2016 & some & & & \\
@@ -745,7 +772,8 @@ there are shown four libraries which are compared to the base of the other measu
 \begin{table}[th]
 \caption{Filtered table of packages with expansion measures} 
 \begin{threeparttable}
-\begin{tabular}{|Q{2.3cm}|Q{1.1cm} Q{2.4cm} Q{2.4cm} Q{2.4cm}|}
+\arrayrulecolor{orange}
+\begin{tabular}{|Q{2.4cm}|Q{1.1cm} Q{2.3cm} Q{2.3cm} Q{2.3cm}|}
 \hline \hline
 %\rowcolor[HTML]{FFF0F0}
 \rowcolor{myColor2}
@@ -832,7 +860,7 @@ suites. \textit{Raff/tls-psk} library contains only 4 versions of cipher suites 
 are not supported. 
 
 To solving the issue, one of the supported cipher suites was added to the test server. It turned 
-out that package \textit{Raff/tls-psk} has also any other issues whose I have not examined yet.
+out that package \textit{Raff/tls-psk} has also some other issues whose I have not examined yet.
 
 The other solution how to implement TLS\_PSK to Go is using Cgo. Cgo allows Go to 
 interoperate code written in C language. How Cgo works I describe in section \ref{cgo}. 
@@ -896,7 +924,7 @@ private_key := arg[3]
 C.psk_key = C.CString(private_key)
 \end{lstlisting}
 
-\section{Communication protocol}
+\section{Communication protocol}\label{comprot}
 Communication between the application and server containing the internal Certificate Authority (CA Server) is based on null-terminated strings. The protocol looks as follows:
 
 \subsection{Connection using TLS\_PSK}
@@ -1056,7 +1084,7 @@ various utility functions \cite{foundation}.
 
 In the implementation was needed to create methods working with \textit{OpenSSL} in language C. 
 The methods are described in section \ref{langCinGo} and called from Go code using Cgo (explained 
-in section \ref{cgo}). .........
+in section \ref{cgo}). The whole implementation is divided to the functions and strictly adheres communication protocol (see section \ref{comprot}). .........(opisat openssl)
 
 During the implementation did not rise any other problem.
 
@@ -1111,27 +1139,46 @@ interface.
 
 
 \chapter{Conclusion}
-This Bachelor thesis deals with cryptographic tools of Go programming language. Its goal was to 
-evaluate cryptographic libraries and implement the prototype of a client application. The thesis 
-was consulted and developed in cooperation with Y Soft Corporation, a.s.
+This Bachelor thesis deals with cryptographic tools of Go programming language. The aim was to 
+evaluate Go cryptographic libraries and implement the prototype of a client application able to 
+generate asymmetric keys and certificate signing requests and connect to a server application 
+using TLS\_PSK cipher suite. The thesis was consulted and realized in cooperation with Y Soft 
+Corporation, a.s.
 
 The Go libraries were overviewed and compared based on their support of symmetric and asymmetric 
 cryptographic algorithms and hash operations. In pursuance of analysis, the four libraries were 
 selected and subsequently examined according to methods for generation of cryptographic keys and 
 self-signed certificates, support for certificate signing requests, different formats, and 
-SSL/TLS.  From the report, one library was selected to the implementation.
+SSL/TLS. From the report, one library was selected to the implementation.
 
-The prototype of a client application is able to generate asymmetric keys and certificate signing 
-requests, connect to a server application using TLS\_PSK cipher suite and communicate with the 
-server. The application is prepared to integrate to the company system.
+The prototype of a client application is implemented in language Go which interoperates with 
+methods in language C. The source code contains the both languages written according to rules of 
+Cgo. C methods serve the connection to the server and the communication between the client and the 
+server using OpenSSL. Go methods serve concretely subjects of communication. During 
+implementation, I solved problems with non-supported library and OpenSSL integration. The client
+application is prepared to integrate to the company system.
 
 The Bachelor thesis had a great personal benefit for me. I expanded my knowledge of Go programming 
 language, OpenSSL, and the certificates. I also gain a great asset in designing and developing the 
 application and I improved my programming skills in the languages C and Go. 
 
-....
+...1
 
-....
+...2
+
+...3
+
+...4
+
+...5
+
+...6
+
+...7
+
+...8
+
+...9
 
 \printbibliography
 
