@@ -60,9 +60,7 @@
 The aims of the thesis are twofold. 
 
 First, the thesis overviews and compares cryptographic libraries available for Go programming 
-language. The comparison covers supported cryptographic algorithms, key sizes, hash operations, 
-methods for generation of cryptographic keys, methods for work with X.509 certificates and higher 
-level protocols such as SSL/TLS. 
+language. %The comparison covers supported cryptographic algorithms, key sizes, hash operations, methods for generation of cryptographic keys, methods for work with X.509 certificates and higher level protocols such as SSL/TLS. 
 
 Second, the thesis contains the implementation, tests and evaluation of a prototype of a client 
 application able to generate asymmetric keys and certificate signing requests, connect to a server 
@@ -98,6 +96,7 @@ thesis.
 %\definecolor{myColor}{RGB}{255,240,240} %pink
 \definecolor{myColor2}{rgb}{0.95,0.95,0.92}%{RGB}{233,233,233} %grey
 \usepackage[flushleft]{threeparttable} %note in table
+
 \usepackage{enumitem}
 \usepackage{graphicx,lipsum,wrapfig} %obrazok obtekany textom
 \usepackage{footnote}
@@ -133,30 +132,42 @@ thesis.
 
 \begin{document}
 \chapter{Introduction}
-One of the oldest systems of symmetric cryptography is probably “Skytale” used in 5th century BC. 
+One of the oldest systems of symmetric cryptography is probably \textit{“Skytale”} used in 5th 
+century BC. 
 The secret was made by the stick with some diameter which was reeled leather stripe on so that 
-covered surface of the stick. Then the message was written there. After the untangled message was
+covered surface of the stick. The message was written there, and after the untangled, the text was 
 unreadable. Cryptography informs as we know nowadays, it began to develop at the beginning of 20th 
 century especially with development telegraphs. Using cryptography happened necessary part of 
 ordinary life. All connections through we communicate are secured by some case through 
-cryptographic functions. An only little mistake in those functions can cause to misuse private 
+cryptographic functions. An~only little mistake in those functions can cause to misuse private 
 data. 
     
-Programming language Go belongs to languages which the main idea is provided the best tools for programmers work even though it is not always the easiest or the most effective way. Language Go was made by Google Inc. company in 2007, and it has syntax derived from language C. Safety, speed 
-and concurrency are his main characters. Go provides extensive options for cryptography such as ciphering, hashing and work with certificates. 
+Programming language Go belongs to languages which the main idea is provided the best tools for 
+programmers work even though it~is not always the easiest or the most effective way. Language Go 
+was made by Google Inc. company in 2007, and it has syntax derived from language C. Safety, speed 
+and concurrency are his main characters. Go provides extensive options for cryptography such as 
+ciphering, hashing and work with certificates. 
 
-The aims of the thesis are twofold. First, it is necessary to examine features of language Go related safety and cryptography, analyze libraries which Go contains and also search for available third-party libraries. The thesis contains the overview, evaluate and compare existing cryptographic liberates based on their license, usability, supported cryptographic functions, such as symmetric and asymmetric encryption and hash functions. Next based on possibilities for the generation of cryptographic keys, work with X.509, such as generation of self-signed certificates, support for certificate signing requests and support for different formats and extensions.  It also compares support of higher level protocols such as SSL/TLS.    
+The aims of the thesis are twofold. First, it is necessary to examine features of language Go 
+related safety and cryptography, analyze libraries which Go contains and also search for available 
+third-party libraries. The thesis contains the overview, evaluate and compare existing 
+cryptographic liberates based on their license, usability, supported cryptographic functions, such 
+as symmetric and asymmetric encryption and hash functions. Next based on possibilities for 
+the~generation of cryptographic keys, work with X.509, such as generation of self-signed 
+certificates, support for certificate signing requests and support for different formats and 
+extensions.  It also compares support of higher level protocols such as SSL/TLS.    
 
-Second, Bachelor thesis contains the implementation in language Go, tests and evaluation of a prototype of a client application able to generate asymmetric keys and certificate signing requests and connect to a server application using TLS\_PSK.
+Second, the thesis contains the implementation in language Go, tests and evaluation of a 
+prototype of a client application able to generate asymmetric keys and certificate signing 
+requests and connect to a server application using TLS\_PSK.
 
-The thesis is consulted and realized in collaboration with Y Soft Corporation, a.s.
-
-...1
+The Bachelor thesis is consulted and realized in collaboration with Y~Soft~Corporation,~a.s.
 
 \chapter{Basic Terms}
-In this chapter, I will define the basic terms which are necessary to an understanding of the 
-text presented in the following chapters. First I will describe the structure of certificates, 
-standard X.509, certificate authority and signing process. I will explain self-signed certificate and formats. Finally, I will describe protocols SSL/TLS and TLS pre-shared key (TLS\_PSK) 
+In this chapter, I will define the basic terms which are necessary to the~understanding of the 
+text presented in the following sections. First I~will describe the structure of certificates, 
+standard X.509, certificate authority and signing process. I will explain self-signed certificate 
+and formats. Finally, I will describe protocols SSL/TLS and TLS pre-shared key (TLS\_PSK) 
 algorithm used in the application.
 
 \begin{comment}
@@ -222,13 +233,14 @@ and for digital signing of data \cite{piper2006kryptografie}.
 \end{comment}
 
 \section{Certificate}
-Certificate is digitally signed data structure whose basis includes a public key of
-certificate owner. There are some standards of the certificate structure (X.509, EDI, WAP, 
-etc.). The Internet is based on standard X.509 version 3, which was issued by the ITU \cite{dostalek2016velky}. %For the needs of the Internet, there is created an Internet profile of X.509 in the relevant RFC. Current Internet profile certificate is standard RFC-5280 \cite{dostalek2016velky}.
+The certificate is digitally signed data structure whose basis includes a public key of
+certificate owner. There are some standards of~the~certificate structure (X.509, EDI, WAP, 
+etc.). The Internet is based on standard X.509 version 3, which was issued by the ITU 
+\cite{dostalek2016velky}. %For the needs of the Internet, there is created an Internet profile of X.509 in the relevant RFC. Current Internet profile certificate is standard RFC-5280 \cite{dostalek2016velky}.
 
 \subsection{Standard X.509}
 Standard X.509 was originally designed as an authentication framework for X.500 
-directories. They have a hierarchical structure and the individual attributes can be assigned to 
+directories. They have a hierarchical structure, and the individual attributes can be assigned to 
 individual computers of companies or individual printers \cite{schmeh2006cryptography}. % That is, each entity can be clearly identified, and each can have its private and public key.
 Certificate X.509, see Figure \ref{fig:certificate}.
 
@@ -273,7 +285,7 @@ The Certificate Authority (CA) is an independent third party which issues certif
 In other words, the CA is an institution that inspects the certificate request and issues whose 
 validity is verifiable using the responsive public key. The CA was created %(in 1998 in order) 
 to ensure secure encryption through a certified public key and guarantee the validity of the 
-digital signature. The CA also ensures their validity revocation. The CA is truly credible, must 
+digital signature. The CA also provides their validity revocation. The CA is truly credible, must 
 be impartial and, if it is possible, should be subordinate to any higher CA. Subordination means 
 that it identifies the usage of certificates signed by the higher certificate authority 
 \cite{dostalek2016velky}.
@@ -286,12 +298,12 @@ themselves (self-signed certificate).
 \subsection{Self-signed Certificate}
 The self-signed certificate is a certificate which the applicant issues by himself. The 
 self-signed certificate has the same data structure as a certificate issued by CA. This 
-certificate is recognized according to identical item Subject and item Issuer.
+certificate is recognized according to same item Subject and item Issuer.
 
 As proof of the private key possession by the user, the self-signed certificate uses a 
 digital signature which was made by the private key belonging to the public key 
-in the certificate. Verification of the signature is carried out through a public key in the 
-actual certificate \cite{dostalek2016velky}.
+in the certificate. Verification of the~signature is carried out through a public key in the 
+actual certificate~\cite{dostalek2016velky}.
 
 \begin{comment}
 Self-signed certificate is used by software internally. While the applicant generates CSR to 
@@ -301,8 +313,8 @@ certificate.
 \end{comment}
 
 \subsection{Certificate Signing Request}
-The certificate applicant can apply CA to sign certificate by submitting a data structure called a 
-certificate request (CSR) \cite{dostalek2016velky}. The most common format is PKCS\#10. The CSR 
+The certificate applicant can apply CA to sign certificate by submitting a data structure called 
+a certificate request (CSR) \cite{dostalek2016velky}. The most common format is PKCS\#10. The CSR 
 should include:
 \begin{itemize}[leftmargin=2em,rightmargin=1em,itemsep=0.75\parskip,parsep=0em,topsep=0em,partopsep=0em]
 \item Applicant ID
@@ -321,45 +333,47 @@ should include:
 \end{itemize} 
 
 The certificate authority must fill individual fields of the certificate before it signs the 
-result digitally. The CA takes CSR, checks completed fields and fills two important fields called validity period - the time while the certificate is valid - which are shown as: not before, not after. The CA can also add extensions, such as Subject Alternative Name, information 
+result digitally. The CA takes CSR, checks completed fields, and fills two important fields 
+called validity period - the time while the certificate is valid - which are shown as: not 
+before, not after. The CA can also add extensions, such as Subject Alternative Name, information 
 about CA, etc. (see figure \ref{fig:certificate}).
 
 \subsection{Formats PEM and DER}
 The PEM (Privacy Enhanced Mail) is a Base64 encoded DER certificate. It is designed 
-to be safe for inclusion in ASCII or even rich-text documents. This means that we can simply copy 
-and paste the content of a pem file to another document and back. Following figure is a sample 
+to be safe for inclusion in ASCII or even rich-text documents. This means that we can just copy 
+and paste the content of a pem file to another document and back. The following figure is a~sample 
 PEM file containing a private key and a certificate \ref{fig:vzorPEM-DER}.
 
 \begin{figure}[th]
 	\centering
-	\includegraphics[width=1\textwidth]{pem-der}
+	\includegraphics[width=1\textwidth]{pem-der-fig}
 	\caption{A sample example of certificate view}
 	\label{fig:vzorPEM-DER}
 \end{figure}
 
-A certificate or key must start with header where the number of dashes is meaningful, and must 
-be correct. A single PEM file can contain a number of certificates and a key, for example, a 
-single file with public certificate, intermediate certificate, root certificate or private key 
+A certificate or key must start with the header where the number of dashes is meaningful and must be correct. A single PEM file can contain a number of certificates and a key, for example, a 
+single file with a public certificate, intermediate certificate, root certificate or private key 
 \cite{howToSsl}.
 
 The DER (Distinguished Encoding Rules) is a binary form of ASCII PEM format 
-certificate. All types of certificates and private keys can be encoded in DER format, its 
+certificate. All types of certificates and private keys can be encoded in DER format; its  
 information is stored in the binary DER for ASN.1 and applications providing RSA, SSL and TLS 
-should handle DER encoding to read in the information. DER can not contain more then one certificate \cite{bakker_2014}.
+should handle DER encoding to read the information. DER can not contain more than one certificate \cite{bakker_2014}.
 
 \section{Protocol SSL/TLS}
-Protocol SSL/TLS is used for communication security between the client and the server. It 
+Protocol SSL/TLS is used for communication security between the~client and the server. It 
 creates a framework for the use of encryption and hash functions.
 
 Protocol SSL was developed by Netscape Communications which published three versions. The first 
-version was only a test, the second has been used in practice. However, it still contained 
-security vulnerabilities, the most important was susceptibility to attack \textit{man in the 
+version was only a test; the second has been used in practice. However, it still contained 
+security vulnerabilities; the most important was susceptibility to attack \textit{man in the 
 middle} \cite{oppliger2003security}. %zdroj?? https://scholar.google.sk/scholar?q=Security+Technologies+for+the+World+Wide+Web&btnG=&hl=sk&as_sdt=0%2C5 
-The third version was introduced in 1996 and its specification could be found in the document 
-\textit{The SSL Protocol Version 3.0} \cite{freier2011secure}. From this version was created TLS 
+The third version was introduced in 1996, and its specification could be found in the document 
+\textit{The SSL Protocol Version 3.0} \cite{freier2011secure}. From this release was created TLS 
 protocol which is currently the most widespread and supported \cite{oppliger2003security}. 
-There are currently three versions which have only minimal differences. TLS version 1.3 is a draft 
-already used in multiple locations \cite{draft-tls}. For example, the forthcoming \textit{OpenSSL 1.1.1} release will include support for \textit{TLSv1.3} \cite{foundation2}.
+There are currently three versions which have only minimal differences. TLS version 1.3 is a 
+draft already used in multiple locations \cite{draft-tls}. For example, the forthcoming 
+\textit{OpenSSL 1.1.1} release will include support for \textit{TLSv1.3} \cite{foundation2}.
 
 Protocol SSL/TLS provides authentication of the two communicating parties by using asymmetric 
 encryption, message integrity by using MAC and confidentiality by encrypting all 
@@ -379,15 +393,15 @@ type of encryption algorithm or encryption key setting. This information is from
 HP is activated immediately after establishment the connection and provides identification of 
 communicating parties, negotiation of cryptographic algorithms, compression algorithms and other 
 attributes. Then it creates \textit{a master secret} from which are derived encryption keys, 
-initiation vectors and the MAC. The process of the protocol is:
+initiation vectors, and the MAC. The process of the protocol is:
 
 \begin{enumerate}
 \item The client sends a \textit{ClientHello} message to the server, along with the client's random value and supported cipher suites.
-\item The server responds by sending a \textit{ServerHello} message to the client, along with the server's random value.
+\item The server responds by sending a \textit{ServerHello} message to the~client, along with the server's random value.
 \item The server sends its certificate to the client for authentication and may request a certificate from the client. The server sends the \textit{ServerHelloDone} message.
 \item If the server has requested a certificate from the client, the client sends it.
-\item The client creates a random \textit{Pre-Master Secret} and encrypts it with the public key from the server's certificate, sending the encrypted \textit{Pre-Master Secret} to the server.
-\item The server receives the \textit{Pre-Master Secret}. The server and client each generate the \textit{Master Secret} and session keys based on the \textit{Pre-Master Secret}.
+\item The client creates a random \textit{Pre-Master Secret} and encrypts it with the public key from the server's certificate, sending the~encrypted \textit{Pre-Master Secret} to the server.
+\item The server receives the \textit{Pre-Master Secret}. The server and client each generate the \textit{Master Secret} and session keys based on the~\textit{Pre-Master Secret}.
 \item The client and the server exchange the \textit{Finished} messages.
 %\item %The client sends \textit{ChangeCipherSpec} notification to server to indicate that the client will start using the new session keys for hashing and encrypting messages. 
 %Client sends \textit{ClientFinished} message.
@@ -395,7 +409,9 @@ initiation vectors and the MAC. The process of the protocol is:
 %Server sends \textit{ServerFinished} message to the client.
 \end{enumerate}
 
-Client and server can now exchange application data over the secured channel they have established. All messages sent from client to server and from server to client are encrypted using session key \cite{handshakeprotocol}.
+Client and server can now exchange application data over the~secured channel they have established. 
+All messages sent from client to server and from server to client are encrypted using session 
+key~\cite{handshakeprotocol}.
 
 \begin{comment}
 \begin{enumerate}
@@ -430,7 +446,7 @@ applications, usually involving only a very small number of clients and servers.
 
 \begin{enumerate}
 \item The client indicates to use pre-shared key authentication by including one or more PSK cipher suites in the \textit{ClientHello} message. 
-\item If the TLS server also wants to use pre-shared keys, it selects one of the PSK cipher suites and places it in \textit{the ServerHello} message. The server can provide a "PSK identity hint" in the \textit{ServerKeyExchange} message. If no hint is provided, the \textit{ServerKeyExchange} message is omitted.
+\item If the TLS server also wants to use pre-shared keys, it selects one of the PSK cipher suites and places it in the \textit{the ServerHello} message. The server can provide a "PSK identity hint" in the \textit{ServerKeyExchange} message. If no hint is provided, the~\textit{ServerKeyExchange} message is omitted.
 \item The client indicates which key to use by including a "PSK identity" in the \textit{ClientKeyExchange} message.
 \item The \textit{Certificate} and \textit{CertificateRequest} payloads are omitted from the response.
 \item The TLS handshake is authenticated using the \textit{Finished} messages. 
@@ -445,15 +461,15 @@ applications, usually involving only a very small number of clients and servers.
 If the server does not recognize the PSK identity, it may respond with an 
 \textit{unknown\_psk\_identity} alert message.  Alternatively, if the server wishes to hide 
 the fact that the PSK identity was not known, it may continue the protocol as if the PSK 
-identity existed but the key was incorrect: that is, respond with \textit{a decrypt\_error 
+identity existed, but the key was incorrect: that is, respond to an \textit{decrypt\_error 
 alert} \cite{eronen2005pre}. 
 
 \chapter{Language Go}\label{go}
-In this chapter I will explain the main characters of language Go and show how to write the 
-code. Next I will describe Go libraries called packages and the tool Cgo.
+In this chapter, I will explain the main characters of language Go and show how to write the 
+code. Next, I will describe Go libraries called packages and the tool Cgo.
 
 \section{Introduction}
-Go is a programming language developed at \textit{Google} in year 2007 and announced in 
+Go is a programming language developed at \textit{Google} in the year 2007 and announced in 
 November 2009. Many companies have started using Go because of its performance, simplicity, 
 ease of use and powerful tooling. Go programming language is a statically-typed language with 
 advanced features and a clean syntax \cite{doxsey2016introducing}. It combines the performance 
@@ -486,10 +502,10 @@ type the following:
 \begin{lstlisting}
 go version
 \end{lstlisting}
-Upgrading from an older version of Go must be precessed by removing the existing version. 
+Upgrading from an older version of Go must be predecessed by removing the existing version. 
 
-\subsection{Enviroment}
-After installation, it is necessary to set Go to the \textit{\$PATH} environment variable and set the \textit{\$GOROOT} environment variable to point to the directory in which it was installed. The Go toolset uses an environment variable called \textit{\$GOPATH} to find Go source code. 
+\subsection{Environment}
+After installation, it is necessary to set Go to the \textit{\$PATH} environment variable and set the \textit{\$GOROOT} environment variable to point to the~directory in which it was installed. The Go toolset uses an environment variable called \textit{\$GOPATH} to find Go source code. 
 
 For example, if you installed Go to your home directory you should add commands like the following to \textit{\$HOME/.profile}:
 %Set up your workplace, for example \textit{GOPATH=C:/Projects/Go}.
@@ -528,7 +544,7 @@ or type in the following to parameterize execution of programs. First must be us
 go build <file-name>.go
 ./<file-name> <arguments>
 \end{lstlisting}
-In code, $os.Args$ provides access to raw command-line arguments. The first value is the path to the program, and \textit{os.Args[1:]} holds the arguments to the program.
+In code, $os.Args$ provides access to raw command-line arguments. The~first value is the path to the program, and \textit{os.Args[1:]} holds the~arguments to the program.
 \begin{lstlisting}
 argsWithProg := os.Args
 argsWithoutProg := os.Args[1:]
@@ -561,9 +577,9 @@ programmers to write small pieces of software components through packages, and c
 applications with these small packages.
 
 The packages from the standard library are available at the $pkg$ subdirectory of the $\$GOROOT$ 
-directory. When we install Go, an environment variable $\$GOROOT$ will be automatically added to 
+directory. When we install Go, an~environment variable $\$GOROOT$ will be automatically added to 
 our system for specifying the Go installer directory. The Go developer community is very 
-enthusiastic for developing third-party Go packages. When you develop Go applications, you can 
+enthusiastic about developing third-party Go packages. When you develop Go applications, you can 
 affect these third-party Go packages \cite{stack_2014}.
 
 When programmers develop executable programs, they will use the package $main$ for making the 
@@ -571,7 +587,7 @@ package as an executable program. The package $main$ tells the Go compiler that 
 should compile as an executable program instead of a shared library. When programmers build 
 shared libraries, they will not have any main package and main function in the package.
 
-To download third-party Go packages the following command is used: 
+To download third-party Go packages, the following command is used: 
 \begin{lstlisting}
 go get example/exampleLib
 \end{lstlisting}
@@ -607,7 +623,7 @@ func main() {
 \end{lstlisting}
 
 \section{C? Go? Cgo!}\label{cgo}
-Cgo allows Go to interoperate with C code. Go source file imports~"C" and it is immediately 
+Cgo allows Go to interoperate with C code. Go source file imports~"C", and it is immediately 
 preceded by comment lines which may contain any C code, including function and variable 
 declarations and definitions. It is necessary to say that there must be no blank lines in 
 between the cgo comment and the import statement. 
@@ -628,21 +644,21 @@ func main() {
 }
 \end{lstlisting}
 
-Cgo allows including own C libraries. The header file $foo.h$, the library implementation 
-$foo.c$ and go wrapper $foo.go$ are located in the same package $\$GOPATH/src/foo$. 
+Cgo allows including own C libraries. The header file $foo.h$, the~library implementation 
+$foo.c$ and go wrapper $foo.go$ are located in the~same package $\$GOPATH/src/foo$. 
 \begin{lstlisting}
 #cgo CFLAGS: -I/{$GOPATH}/src/foo
 #cgo LDFLAGS: -L/{$GOPATH}/src/foo -lfoo
 \end{lstlisting}
-Go wrapper contains the explicit paths in the cgo flags because of an environment issue where 
+Go wrapper contains the explicit paths in the cgo flags because of an~environment issue where 
 libfoo wasn’t found by the Go linker.
 \begin{lstlisting} 
 go install foo 
 \end{lstlisting}
-By installing the package everything is prepared for using in Go. Package is called in Go code 
+By installing the package, everything is prepared for use in Go. Package is called in Go code 
 through $import "foo"$.
 
-In order to use Cgo on Windows, it is firstly needed to install a gcc compiler and have 
+In order to use Cgo on Windows, it is firstly needed to install a~gcc~compiler and have 
 $gcc.exe$ in $\$PATH$ environment variable before compiling with Cgo will work.
 
 \nocite{cgo-command}
@@ -650,8 +666,8 @@ $gcc.exe$ in $\$PATH$ environment variable before compiling with Cgo will work.
 \nocite{cgo-wiki}
 
 \nocite{chisnall2012go}
-\nocite{balbaert_2012}
-\nocite{summerfield_2012}
+%\nocite{balbaert_2012}
+%\nocite{summerfield_2012}
 \nocite{harris_2015}
 \nocite{kozyra_2014}
 
@@ -660,7 +676,7 @@ This chapter contains the overview, evaluate and compare existing cryptographic 
 their measures and expansion measures important for implementation.
 
 \section{Cryptographic functions}
-It was necessary to examine features of language Go related to the security and cryptography, analyze 
+It was necessary to examine features of language Go related to the~security and cryptography, analyze 
 libraries which Go contains and also search for available third-party libraries. 
 
 Table \ref{table:analysis} shows analyzed Go package Crypto created by \textit{Golang} and other Go 
@@ -672,9 +688,9 @@ packages created by third-parties. Individually items mean:
 \item Start of project - a year of creating project with package.
 \item Is still opened - the important measure is if contributors still work on the project (Yes/No).
 \item Issue tracker system - support of solving bugs, feature requests, tracking todos, and more (Yes/No).
-\item Documentation accessibility - assessed on a scale of 0-5 points (5 is the highest) according to own experience to work with the package.
-\item Downloads - number of downloads. In case the package is saved on \textit{https://github.com/}, the information about downloads presents value of Fork. Downloads of package Crypto created by Golang is unknown, this package is automatically installed with installing program Go.  
-\item License - availability of licenses for free (Yes/Payment). The payment indicates the amount of payment per some period. This case did not occur.
+\item Documentation Accessibility - assessed on a scale of 0-5 points (5 is the highest) according to own experience to work with the~package.
+\item Downloads - the number of downloads. In case the package is saved on \textit{https://github.com/}, the information about downloads presents the value of Fork. Downloads of package Crypto created by Golang is unknown; this package is automatically installed with installing program Go.  
+\item License - availability of licenses for free (Yes/Payment). The~payment indicates the amount of payment per some period. This case did not occur.
 \end{itemize}
 \vskip0.1in
 
@@ -744,17 +760,17 @@ golang/ oauth2 & asym, hash & 2014 & Y & Y & 4 & 279 & Y \\ [3ex]
 The table \ref{table:analysis} was created based on information available on 
 following websites \cite{security-golibrariesAndApps} \cite{cryptography-golibrariesAndApps} 
 \cite{crypto-godoc} \cite{packages-thegoprogramminglanguage}. The 
-table does not contain packages which do not support any cryptographic functions. Also, 
+table does not include packages which do not support any cryptographic functions. Also, 
 the table does not contain information from untrusted sources. During the analysis, I 
 discovered sources which are not up to date or supported \cite{puregolibs}. 
 
 I searched immediately using keywords as names of functions or words in descriptions of functions. 
-I found a large amount of packages, but a few of them met the necessary requirements such as 
-support of symmetric and asymmetric algorithms or hash operations. 
+I found plenty of packages, but a few of them met the necessary requirements such as 
+support for symmetric and asymmetric algorithms or hash operations. 
 
 \section{Expansion measures}
 
-The next step of analysis was to select the packages which fulfill the requirements. The important 
+The next step of analysis was to select the packages which fulfill the~requirements. The relevant 
 parameters were the support of all cryptographic functions, the topicality of project, the 
 approach to solving problems and no payment license. In the table \ref{table:analysis23}, 
 there are shown four libraries which are compared to the base of the other measures:
@@ -823,9 +839,9 @@ protocols such as SSL/TLS. Only the Crypto package contains subdirectory worked 
 to the server.
 
 \chapter{Implementation}
-The practical part of my Bachelor thesis was to implement console application to create keys and 
+The practical part of my Bachelor thesis is to implement console application to create keys and 
 certificates which are signed by internal certificate authority. In this chapter, I will explain the 
-assignment, the problems and the process of implementation. 
+assignment, the~problems and the process of implementation. 
 
 \section{Assignment}
 For functionality, there are needed several parameters, such as:
@@ -879,10 +895,10 @@ the available SSL/TLS ciphers and digests.
 Connection to the server is created through TLS\_PSK. Connection method creates a new SSL\_CTX 
 object as a framework to establish TLS/SSL enabled connections, next it creates a new BIO chain 
 consisting of an SSL BIO (using ctx) followed by a setting of address and pre-shared key. The 
-address consists of host name and port. The pre-shared key is set through 
-\textit{SSL\_set\_psk\_client\_callback} with SSL and a callback function as arguments. The 
+address consists of host name and port. The~pre-shared key is set through 
+\textit{SSL\_set\_psk\_client\_callback} with SSL and a~callback function as arguments. The 
 purpose of the callback function is to select the PSK identity and the pre-shared key to use 
-during the connection setup phase. The variable with the pre-shared key has to be global. The 
+during the~connection setup phase. The variable with the pre-shared key has to be global. The 
 setting is followed by a connect BIO.
 
 \subsection{Reading from and writing to server}
@@ -910,7 +926,7 @@ func C.GoString(*C.char) string
 func C.GoStringN(*C.char, C.int) string
 \end{lstlisting}
 
-As I wrote in the subsection \ref{conn}, the pre-shared key has to be the global variable in C 
+As I wrote in the subsection \ref{conn}, the pre-shared key has to be the~global variable in C 
 code. To set it from Go code where application takes the pre-shared key as an argument, I used 
 followed commands.
 \begin{lstlisting}
@@ -925,7 +941,7 @@ C.psk_key = C.CString(private_key)
 \end{lstlisting}
 
 \section{Communication protocol}\label{comprot}
-Communication between the application and server containing the internal Certificate Authority (CA Server) is based on null-terminated strings. The protocol looks as follows:
+Communication between the application and server containing the~internal Certificate Authority (CA Server) is based on null-terminated strings. The protocol looks as follows:
 
 \subsection{Connection using TLS\_PSK}
 \begin{itemize}[leftmargin=2em,rightmargin=1em,itemsep=0.75\parskip,parsep=0em,topsep=0em,partopsep=0em]
@@ -1000,8 +1016,8 @@ csr,err:=x509.CreateCertificateRequest(rand.Reader,tmp,key)
 \end{lstlisting}
 
 The template and function \textit{CreateCertificateRequest} are from package 
-\textit{"crypto/x509"}. The function returns bytes array, so to sending the request to the server, 
-it has to be converted to pem string. The request has to be saved in temp file as follows:
+\textit{"crypto/x509"}. The function returns bytes array, so to sending the~request to the server, 
+it has to be converted to pem string. The~request has to be saved in temp file as follows:
 \begin{lstlisting}
 pem.Encode(csr_file, &pem.Block{Type: "CERTIFICATE REQUEST", Bytes: csr})
 \end{lstlisting}
@@ -1015,7 +1031,7 @@ with generated key they are saved to the key store.
 
 \subsection{Achieving trust}
 The connection ends when the server sends trust anchor as a CA certificate. After that, it is not 
-possible to write to or read from the server. Correctness of achieving trust is checked up 
+possible to write to or read from the~server. Correctness of achieving trust is checked up 
 through:
 \begin{lstlisting}
 strings.HasPrefix(str, "-----BEGIN")
@@ -1052,7 +1068,7 @@ go build app.go
 \chapter{Evaluation}
 
 In this chapter, I will evaluate process of working on this thesis. I will describe the workflow, 
-the problems and way how to integrate the application in the company system.
+the problems and way how to integrate the~application in the company system.
 
 \section{Select Libraries}
 Before analyzing libraries, I had to learn Go language, install it and try to programming. All 
@@ -1063,8 +1079,7 @@ The Internet provides a big amount of Go packages created by third parties. To t
 selected more than one hundred packages working with cryptographic functions and hash operations. 
 It was necessary to remove packages from untrusted and unsupported sources. The correct packages 
 in table \ref{table:analysis} are compared based on their actuality (topicality), the approach to 
-solving problems, documentation accessibility, number of downloads and no payment license. The 
-table \ref{table:analysis23} contains 4 libraries selected from table \ref{table:analysis}. 
+solving problems, documentation accessibility, number of downloads and no payment license. The~table \ref{table:analysis23} contains 4 libraries selected from table \ref{table:analysis}. 
 
 The analysis shows that until today, a package that is suitable with all the requirements does not 
 exist. The generation of cryptographic keys (within 2 to 8192 bytes) and support of TLS protocol at 
@@ -1084,7 +1099,19 @@ various utility functions \cite{foundation}.
 
 In the implementation was needed to create methods working with \textit{OpenSSL} in language C. 
 The methods are described in section \ref{langCinGo} and called from Go code using Cgo (explained 
-in section \ref{cgo}). The whole implementation is divided to the functions and strictly adheres communication protocol (see section \ref{comprot}). .........(opisat openssl)
+in section \ref{cgo}). The whole implementation is divided into the functions and strictly adheres 
+communication protocol (see section \ref{comprot}). 
+
+The application requires installing package 
+\textit{libssl-dev}  (or \textit{openssl-devel} on Fedora). This package is part of the 
+\textit{OpenSSL} project's implementation of the SSL and TLS cryptographic protocols for secure 
+communication over the Internet. It contains development libraries, header files, and manpages for 
+\textit{libssl} and \textit{libcrypto}. LDFLAGS and CFLAGS are defined with pseudo $\#cgo$ 
+directives within comments to tweak the behavior of the C compiler. 
+\begin{lstlisting}
+#cgo CFLAGS: -Iaddress/to/openssl/include
+#cgo LDFLAGS: -lcrypto -lssl
+\end{lstlisting}
 
 During the implementation did not rise any other problem.
 
@@ -1130,10 +1157,10 @@ and wrong connection, arguments and key size.
 
 \subsection{File test}
 These tests check saving certificates and keys without connection and previous communication with 
-the server to the key store with the existing or non-existing path, correct key or empty 
+the server to the key store with the~existing or non-existing path, correct key or empty 
 interface. 
 
-\section{Cross-compiler and Integration}
+%\section{Cross-compiler and Integration}
 
 
 
@@ -1141,7 +1168,7 @@ interface.
 \chapter{Conclusion}
 This Bachelor thesis deals with cryptographic tools of Go programming language. The aim was to 
 evaluate Go cryptographic libraries and implement the prototype of a client application able to 
-generate asymmetric keys and certificate signing requests and connect to a server application 
+generate asymmetric keys and certificate signing requests and connect to a~server application 
 using TLS\_PSK cipher suite. The thesis was consulted and realized in cooperation with Y Soft 
 Corporation, a.s.
 
@@ -1149,36 +1176,20 @@ The Go libraries were overviewed and compared based on their support of symmetri
 cryptographic algorithms and hash operations. In pursuance of analysis, the four libraries were 
 selected and subsequently examined according to methods for generation of cryptographic keys and 
 self-signed certificates, support for certificate signing requests, different formats, and 
-SSL/TLS. From the report, one library was selected to the implementation.
+SSL/TLS. From the~report, one library was selected for the implementation.
 
 The prototype of a client application is implemented in language Go which interoperates with 
 methods in language C. The source code contains the both languages written according to rules of 
-Cgo. C methods serve the connection to the server and the communication between the client and the 
-server using OpenSSL. Go methods serve concretely subjects of communication. During 
-implementation, I solved problems with non-supported library and OpenSSL integration. The client
-application is prepared to integrate to the company system.
+Cgo. C methods serve the connection to the server and the communication between the client and 
+the server using OpenSSL. Go methods serve subjects of communication concretely. During 
+implementation, I solved problems with non-supported library and OpenSSL integration. The 
+client's application is prepared to integrate to the company system.
 
-The Bachelor thesis had a great personal benefit for me. I expanded my knowledge of Go programming 
-language, OpenSSL, and the certificates. I also gain a great asset in designing and developing the 
-application and I improved my programming skills in the languages C and Go. 
+The Bachelor thesis had a great personal benefit for me. I expanded my knowledge of Go 
+programming language, OpenSSL, and the certificates. I also gain a great asset in designing and 
+developing the~application and I improved my programming skills in the languages C and Go. 
 
-...1
 
-...2
-
-...3
-
-...4
-
-...5
-
-...6
-
-...7
-
-...8
-
-...9
 
 \printbibliography
 
