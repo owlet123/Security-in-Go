@@ -24,7 +24,7 @@ static unsigned int psk_client_cb(SSL *ssl, const char *hint, char *identity,
 	int ret;
 	long key_len = 4L; // rewritten from unsigned int = 4;
 	unsigned char *key;
-	if (hint) printf("Received PSK identity hint '%s'\n", hint);
+	//if (hint) printf("Received PSK identity hint '%s'\n", hint);
 	
 	// lookup PSK identity and PSK key based on the given identity hint here
 	
@@ -34,7 +34,7 @@ static unsigned int psk_client_cb(SSL *ssl, const char *hint, char *identity,
 	//printf("created identity '%s' len=%d\n", identity, ret);
 	
 	key = (unsigned char*) psk_key;
-	printf("psk_key = %s\n", key);
+	//printf("psk_key = %s\n", key);
 	if (key_len > max_psk_len) {
 		printf("psk buffer of callback is too small (%ld) for key (%ld)\n", max_psk_len, key_len);
 		return 0;
@@ -75,7 +75,7 @@ int C_bio_write(BIO *bio, const char * buff, int len) {
 	strcpy(buf, buff);
 	strcat(buf, "\0");
 	
-	printf("writing... %s ", buf);
+	//printf("writing... %s ", buf);
 	if (BIO_write(bio, buf, len) <= 0) {
 		if (!BIO_should_retry(bio)) {
 			printf("Error while BIO_read - failed write.\n");
