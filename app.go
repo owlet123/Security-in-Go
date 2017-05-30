@@ -1,8 +1,8 @@
 package main
 
 /*
-#cgo CFLAGS: -IC:/OpenSSL-Win64/include/include
-#cgo LDFLAGS: -lcrypto -lssl
+//#cgo CFLAGS: -IC:/OpenSSL-Win64/include/include
+//#cgo LDFLAGS: -lcrypto -lssl
 // Openssl.cpp : Defines the entry point for the console application.
 //#include "stdafx.h"
 // OpenSSL headers 
@@ -31,7 +31,7 @@ static unsigned int psk_client_cb(SSL *ssl, const char *hint, char *identity,
 	ret = BIO_snprintf(identity, max_identity_len, "%s", psk_identity);
 	
 	if (ret < 0 || (unsigned int)ret > max_identity_len) return 0;
-	printf("created identity '%s' len=%d\n", identity, ret);
+	//printf("created identity '%s' len=%d\n", identity, ret);
 	
 	key = (unsigned char*) psk_key;
 	printf("psk_key = %s\n", key);
@@ -58,7 +58,7 @@ BIO * conn(char* add) {
 	SSL_set_mode(ssl, SSL_MODE_AUTO_RETRY);
 	SSL_set_psk_client_callback(ssl, psk_client_cb);
 	int e = BIO_do_connect(bio);
-	printf("BIO_do_connect(bio): %d\n", e);
+	//printf("BIO_do_connect(bio): %d\n", e);
 	if (e == -1) return NULL;
 	return bio;
 }
@@ -83,7 +83,7 @@ int C_bio_write(BIO *bio, const char * buff, int len) {
 		}
 		// Do something to handle the retry
 	}
-	printf("...OK\n");
+	//printf("...OK\n");
 	return 1;
 }
 char* C_bio_read(BIO * bio) {
@@ -113,7 +113,7 @@ char* C_bio_read(BIO * bio) {
 		}
 		free(buf_tmp);
 	}	
-	printf("reading... %s ...OK\n", buf);
+	//printf("reading... %s ...OK\n", buf);
 	return buf;
 }
 */
@@ -141,7 +141,7 @@ func pemBlockForKey(priv interface{}) *pem.Block {
 	case *ecdsa.PrivateKey:
 		b, err := x509.MarshalECPrivateKey(k)
 		if err != nil {
-			fmt.Println(os.Stderr, "Unable to marshal ECDSA private key: %v", err)
+			//fmt.Println(os.Stderr, "Unable to marshal ECDSA private key: %v", err)
 			os.Exit(2)
 		}
 		return &pem.Block{Type: "EC PRIVATE KEY", Bytes: b}
@@ -169,7 +169,7 @@ func check_arrguments(server, port, key, keystore, ip, dn, cert_type string) {
 	if cert_type != "CA" && cert_type != "END" {
 		log.Fatalf("error: not correct certificate type (CA/END)")
 	} 
-	fmt.Println("Correct arguments")
+	//fmt.Println("Correct arguments")
 }
 
 func create_connection(server, port, private_key string) *C.BIO {
@@ -191,7 +191,7 @@ func protocol_version_exchange(bio *C.BIO) int {
 	}
 
 	server_protocol_version := C.C_bio_read(bio)
-	fmt.Printf("Server protocol version: %s", C.GoString(server_protocol_version))
+	//fmt.Printf("Server protocol version: %s", C.GoString(server_protocol_version))
 	if *server_protocol_version != *protocol_version {
 		return -1
 	} 
@@ -222,7 +222,7 @@ func generate_key(bio *C.BIO, cert_type string) (interface{}, string) {
 	}
 
 	key_length := C.C_bio_read(bio)
-	fmt.Println("server key length: ", C.GoString(key_length))
+	//fmt.Println("server key length: ", C.GoString(key_length))
 	key_len, err := strconv.Atoi(C.GoString(key_length))	
 	checkErr(err)
 		
@@ -253,7 +253,7 @@ func create_csr(bio *C.BIO, ip, dn string, key interface{}) string {
 	checkErr(err)
 	pem.Encode(csr_out, &pem.Block{Type: "CERTIFICATE REQUEST", Bytes: cert_req})
 	csr_out.Close()
-	log.Printf("written csr.pem\n")
+	//log.Printf("written csr.pem\n")
 	
 	return "csr.pem"
 }
@@ -353,7 +353,7 @@ func main() {
 	if ret := protocol_version_exchange(bio); ret == -1 {
 		log.Fatalf("error: different version")
 	} else {
-		fmt.Println(" ...OK")
+		//fmt.Println(" ...OK")
 	}
 	
 	//3. key length
@@ -361,7 +361,7 @@ func main() {
 	if key == nil {
 		log.Fatalf(e)
 	} else {
-		fmt.Println("correct key")
+		//fmt.Println("correct key")
 	}
 	
 	//4. certificate signing
@@ -371,21 +371,21 @@ func main() {
 	if ret == -1 {
 		log.Fatalf(e)
 	} else {
-		fmt.Println("server sends correct certificate")
+		//fmt.Println("server sends correct certificate")
 	}
 
 	os.Remove("csr.pem")
 	
 	//saving certificate
 	if ret := save_cert(cert, path); ret == 0 {
-		log.Printf("written %s/cert.pem\n", path)
+		//log.Printf("written %s/cert.pem\n", path)
 	} else if ret == -1 {
 		log.Fatalf("Error while saving certificate")
 	}
 	
 	//saving key
 	if ret := save_key(key, path); ret == 0 {
-		log.Printf("written %s/key.pem\n", path)
+		//log.Printf("written %s/key.pem\n", path)
 	} else if ret == -1 {
 		log.Fatalf("Error while saving key")
 	}
@@ -397,7 +397,8 @@ func main() {
 	if !(strings.HasPrefix(str, "-----BEGIN")) {
 		log.Fatalf("error: not correct trust anchor")
 	} else {
-		fmt.Println("correct trust anchor")
+		//fmt.Println("correct trust anchor")
 	}
 	//server terminates the connection
+	fmt.Printf("Correct.\n")
 }
