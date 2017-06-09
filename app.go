@@ -2,7 +2,7 @@ package main
 
 /*
 //#cgo CFLAGS: -IC:/OpenSSL-Win64/include/include
-//#cgo LDFLAGS: -lcrypto -lssl
+#cgo LDFLAGS: -lcrypto -lssl
 // Openssl.cpp : Defines the entry point for the console application.
 //#include "stdafx.h"
 // OpenSSL headers 
@@ -100,6 +100,8 @@ char* C_bio_read(BIO * bio) {
 		} else if (x < 0) {
 			if (!BIO_should_retry(bio)) {
 				printf("Error while BIO_read - failed read.\n");
+				ERR_get_error();
+				ERR_print_errors(bio);
 			}
 			// Do something to handle the retry 
 		}
@@ -113,7 +115,7 @@ char* C_bio_read(BIO * bio) {
 		}
 		free(buf_tmp);
 	}	
-	//printf("reading... %s ...OK\n", buf);
+	//printf("reading... %s\n", buf);
 	return buf;
 }
 */
